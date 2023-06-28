@@ -47,12 +47,18 @@ if portName != "None":
 relay1_ON = [1, 6, 0, 0, 0, 255, 201, 138]
 relay1_OFF = [1, 6, 0, 0, 0, 0, 137, 202]
 
+# relay6_ON = [1, 6, 0, 0, 0, 255, 201, 138]
+# relay6_OFF = [1, 6, 0, 0, 0, 0, 137, 202]
+
+distance2_ON = [12, 3, 0, 5, 0, 1, 149, 22]
+# distance2_OFF = [12, 6, 0, 8, 0, 9, 201, 19]
+
 while True:
-    ser.write(relay1_ON)                                                                                                         
+    ser.write(distance2_ON)                                                                                                         
     print(serial_read_data(ser)) 
     # setDevice1(relay1_ON)                                                                                                
     time.sleep(2)                                                                                                                
-    ser.write(relay1_OFF)                                                                                                        
-    print(serial_read_data(ser))   
+    # ser.write(relay1_OFF)                                                                                                        
+    # print(serial_read_data(ser))   
     # setDevice1(relay1_OFF)                                                                                              
-    time.sleep(2)
+    # time.sleep(2)
