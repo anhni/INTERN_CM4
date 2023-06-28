@@ -55,7 +55,7 @@ distance2_ON = [12, 3, 0, 5, 0, 1, 149, 22]
 # distance2_OFF = [12, 6, 0, 8, 0, 9, 201, 19]
 
 while True:
-    ser.write(distance1_ON)                                                                                                         
+    ser.write(distance2_ON)                                                                                                         
     print(serial_read_data(ser)) 
     # setDevice1(relay1_ON)                                                                                                
     time.sleep(2)                                                                                                                
