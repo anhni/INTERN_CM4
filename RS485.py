@@ -29,6 +29,16 @@ def serial_read_data(ser):
             return -1
     return 0
 
+def setDevice1(state):
+    serial_read_data(ser)
+    #print(ser)
+    if state == True:
+        ser.write(relay1_ON)
+        # client.publish(AIO_FEED_ID[2],1)
+    else:
+        ser.write(relay1_OFF)
+        # client.publish(AIO_FEED_ID[2],0)
+
 portName = getPort()
 print("portName:",portName)
 if portName != "None":
@@ -38,9 +48,11 @@ relay1_ON = [0, 6, 0, 0, 0, 255, 200, 91]
 relay1_OFF = [0, 6, 0, 0, 0, 0, 136, 27]
 
 while True:
- ser.write(relay1_ON)                                                                                                         
- print(serial_read_data(ser))                                                                                                 
- time.sleep(5)                                                                                                                
- ser.write(relay1_OFF)                                                                                                        
- print(serial_read_data(ser))                                                                                                 
- time.sleep(5)
+#  ser.write(relay1_ON)                                                                                                         
+#  print(serial_read_data(ser)) 
+    setDevice1(relay1_ON)                                                                                                
+    time.sleep(10)                                                                                                                
+#  ser.write(relay1_OFF)                                                                                                        
+#  print(serial_read_data(ser))   
+    setDevice1(relay1_OFF)                                                                                              
+    time.sleep(10)
