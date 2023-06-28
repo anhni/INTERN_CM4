@@ -78,13 +78,13 @@ while True:
     #     number = int(input("Enter relay number"))
     # except ValueError:
     #     print("Invalid number")
-    number = input("Enter relay number")
-    state = input("Enter state")
+    number = int(input("Enter relay number"))
+    state = int(input("Enter state"))
     if state == 1:
-        ser.write(relay_ON[number])                                                                                                         
+        ser.write(relay_ON[number - 1])                                                                                                         
         print(serial_read_data(ser)) 
     else :
-        ser.write(relay_OFF[number])                                                                                                         
+        ser.write(relay_OFF[number - 1])                                                                                                         
         print(serial_read_data(ser)) 
     time.sleep(2)
 
