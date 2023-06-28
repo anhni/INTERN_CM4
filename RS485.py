@@ -44,8 +44,8 @@ print("portName:",portName)
 if portName != "None":
     ser = serial.Serial(port=portName, baudrate=9600)
 
-relay1_ON = [0, 6, 0, 0, 0, 255, 200, 91]
-relay1_OFF = [0, 6, 0, 0, 0, 0, 136, 27]
+relay1_ON = [1, 6, 0, 0, 0, 255, 201, 138]
+relay1_OFF = [1, 6, 0, 0, 0, 0, 137, 202]
 
 while True:
 #  ser.write(relay1_ON)                                                                                                         
