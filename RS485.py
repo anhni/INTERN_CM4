@@ -83,18 +83,13 @@ def relayController():
         print(serial_read_data(ser)) 
 
 while True:
-    # try:
-    #     number = int(input("Enter relay number"))
-    # except ValueError:
-    #     print("Invalid number")
-    relayController()
-    time.sleep(2)
+    # relayController()
+    # time.sleep(2)
+
+    ser.write(distance1_ON)                                                                                                         
+    print(serial_read_data(ser))                                                                                                
+    time.sleep(2)  
 
     # ser.write(distance2_ON)                                                                                                         
-    # print(serial_read_data(ser)) 
-    # setDevice1(relay1_ON)                                                                                                
-    # time.sleep(2)                                                                                                                
-    # ser.write(relay1_OFF)                                                                                                        
-    # print(serial_read_data(ser))   
-    # setDevice1(relay1_OFF)                                                                                              
+    # print(serial_read_data(ser))                                                                                                
     # time.sleep(2)
