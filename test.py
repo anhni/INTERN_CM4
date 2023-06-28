@@ -40,11 +40,24 @@ def serial_read_data(ser):
 relay1_ON = [1, 6, 0, 0, 0, 255, 201, 138]
 relay1_OFF = [1, 6, 0, 0, 0, 0, 137, 202]
 
+distance9 = [9, 3, 0, 5, 0, 1, 149, 67]
+distance12 = [12, 3, 0, 5, 0, 1, 149, 22]
+
+
+
 while True:
-    ser.write(relay1_ON)
+    # turn on/off relay
+    # ser.write(relay1_ON)
+    # print(serial_read_data(ser))
+    # time.sleep(5)
+    # ser.write(relay1_OFF)
+    # print(serial_read_data(ser))
+    # time.sleep(5)
+    # do khoang cach
+    ser.write(distance9)
     print(serial_read_data(ser))
-    time.sleep(5)
-    ser.write(relay1_OFF)
+    time.sleep(2)
+    ser.write(distance12)
     print(serial_read_data(ser))
-    time.sleep(5)
+    time.sleep(2)
     
