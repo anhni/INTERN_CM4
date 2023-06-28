@@ -54,6 +54,8 @@ distance1_ON = [9, 3, 0, 5, 0, 1, 149, 67]
 distance2_ON = [12, 3, 0, 5, 0, 1, 149, 22]
 # distance2_OFF = [12, 6, 0, 8, 0, 9, 201, 19]
 
+distance1_passive = [9, 8, 0, 20, 0, 1, 96, 135]
+
 relay_ON = [[1, 6, 0, 0, 0, 255, 201, 138],
 [2, 6, 0, 0, 0, 255, 201, 185],
 [3, 6, 0, 0, 0, 255, 200, 104],
@@ -86,7 +88,7 @@ while True:
     # relayController()
     # time.sleep(2)
 
-    ser.write(distance1_ON)                                                                                                         
+    ser.write(distance1_passive)                                                                                                         
     print(serial_read_data(ser))                                                                                                
     time.sleep(2)  
 
