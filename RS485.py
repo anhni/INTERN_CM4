@@ -4,7 +4,7 @@ import serial.tools.list_ports
 def getPort():
     ports = serial.tools.list_ports.comports()
     N = len(ports)
-    comPort = "None"
+    commPort = "None"
     for i in range(0, N):
         port = ports[i]
         strPort = str(port)
