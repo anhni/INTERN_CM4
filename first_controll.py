@@ -21,11 +21,14 @@ def getPort():
 relay1_ON = [1,6,0,0,0,255,201,138]
 relay1_OFF = [1,6,0,0,0,0,137,202]
 
-portName = getPort()
-print("portName:",portName)
-if portName != "None":
-    ser = serial.Serial(port=portName, baudrate=9600)
-
+# portName = getPort()
+# print("portName:",portName)
+# if portName != "None":
+#     ser = serial.Serial(port=portName, baudrate=9600)
+port ="/dev/ttyAMA2"
+baudrate = 9600
+print("Find port {} - baudate {}".format(port,baudrate))
+ser = serial.Serial(port,baudrate)
 print(ser)
 def serial_read_data(ser):
     bytesToRead = ser.inWaiting()
