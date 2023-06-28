@@ -72,20 +72,22 @@ relay_OFF = [[1, 6, 0, 0, 0, 0, 137, 202],
 [7, 6, 0, 0, 0, 0, 137, 172],
 [8, 6, 0, 0, 0, 0, 137, 83]]
 
-
-while True:
-    # try:
-    #     number = int(input("Enter relay number"))
-    # except ValueError:
-    #     print("Invalid number")
-    number = int(input("Enter relay number"))
-    state = int(input("Enter state"))
+def relayController():
+    number = int(input("Enter relay number: "))
+    state = int(input("Enter state: "))
     if state == 1:
         ser.write(relay_ON[number - 1])                                                                                                         
         print(serial_read_data(ser)) 
     else :
         ser.write(relay_OFF[number - 1])                                                                                                         
         print(serial_read_data(ser)) 
+
+while True:
+    # try:
+    #     number = int(input("Enter relay number"))
+    # except ValueError:
+    #     print("Invalid number")
+    relayController()
     time.sleep(2)
 
     # ser.write(distance2_ON)                                                                                                         
