@@ -88,7 +88,8 @@ while True:
     # relayController()
     # time.sleep(2)
 
-    ser.write(distance1_passive) 
+    # ser.write(distance1_passive) 
+    ser.write(distance1_ON) 
     time.sleep(2)  
 
     print(serial_read_data(ser))                                                                                                
