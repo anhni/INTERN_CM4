@@ -129,7 +129,7 @@ class IotGateway_UI:
             self.UI_Set_Button_text(number, self.on)
             self.is_on[number - 1] = True
             # gửi lệnh bật relay
-            self.dataModel.setPumpOff()
+            self.dataModel.setPumpOff(number)
 
     def UI_Refresh(self):
         self.UI_Set_Value_Text(self.labelDistance1Value, self.dataModel.DIS_Value[0])
