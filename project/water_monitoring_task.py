@@ -69,7 +69,7 @@ class waterMonitoringTask:
                 self.soft_timer.set_timer(0, self.SENSING_DELAY)
                 self.status = WMT_Status.IDLE
                 self.DIS_Value = self.rs485.readDistance()
-                print("distance = "self.DIS_Value)
+                print("distance = ", self.DIS_Value)
                 print("Idling")
 
         elif self.status == WMT_Status.IDLE:
