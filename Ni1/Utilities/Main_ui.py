@@ -11,7 +11,7 @@ class Main_UI:
         self.dataModel = data
         print("Init the UI")
         
-        self.window = tk.Tk()
+        self.window = Tk()
         self.on = PhotoImage(file="Utilities\Images\on_button.png")
         self.off = PhotoImage(file="Utilities\Images\off_button.png")
         self.logo = PhotoImage(file="Utilities\Images\on_button.png")
