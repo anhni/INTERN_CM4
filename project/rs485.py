@@ -129,7 +129,7 @@ class RS485:
             self.serial.write(distance[0])
             #return self.serial_read_data(self.serial)
         elif number == 12:
-            self.serial.write(distance[0])
+            self.serial.write(distance[1])
             #return self.serial_read_data(self.serial)
         else:
             print("The number is incorrect")

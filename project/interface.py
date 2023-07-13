@@ -19,18 +19,18 @@ class IotGateway_UI:
         print("Size = ", screen_width, screen_height)
 
         self.button = Button(self.window, image=self.on, bd=0, command=self.toggle_button_click)
-        self.button.place(x=screen_width/2, y=0)
+        self.button.place(x=screen_width/2, y=210)
 
         self.Relay = Label(self.window, text="RELAY",fg="#0000ff", font= "Helvetica 50 bold")
-        self.Relay.place(x=0, y=0, width=screen_width/2, height=100)
+        self.Relay.place(x=0, y=210, width=screen_width/2, height=100)
 
-        self.labelDistance1 = tk.Label(text="Distance",
+        self.labelDistance1 = tk.Label(text="Distance1",
                                         fg="#0000ff",
                                         justify=CENTER,
                                         # bg = "#000",
                                         font="Helvetica 50 bold")
 
-        self.labelDistance1.place(x=0, y=110, width=screen_width / 3, height=100)
+        self.labelDistance1.place(x=0, y=0, width=screen_width / 3, height=100)
 
         self.labelDistance1Unit = tk.Label(text="mm",
                                        fg="#0000ff",
@@ -38,7 +38,7 @@ class IotGateway_UI:
                                        # bg = "#000",
                                        font="Helvetica 30 bold")
 
-        self.labelDistance1Unit.place(x=screen_width / 3, y=110, width=screen_width / 3, height=100)
+        self.labelDistance1Unit.place(x=screen_width / 3, y=0, width=screen_width / 3, height=100)
 
         self.labelDistance1Value = tk.Label(text="3000",
                                            fg="#0000ff",
@@ -46,7 +46,31 @@ class IotGateway_UI:
                                            # bg = "#000",
                                            font="Helvetica 50 bold")
 
-        self.labelDistance1Value.place(x=2 * screen_width / 3, y=110, width=screen_width / 3, height=100)
+        self.labelDistance1Value.place(x=2 * screen_width / 3, y=0, width=screen_width / 3, height=100)
+
+        self.labelDistance2 = tk.Label(text="Distance2",
+                                       fg="#0000ff",
+                                       justify=CENTER,
+                                       # bg = "#000",
+                                       font="Helvetica 50 bold")
+
+        self.labelDistance2.place(x=0, y=110, width=screen_width / 3, height=100)
+
+        self.labelDistance2Unit = tk.Label(text="mm",
+                                           fg="#0000ff",
+                                           justify=CENTER,
+                                           # bg = "#000",
+                                           font="Helvetica 30 bold")
+
+        self.labelDistance2Unit.place(x=screen_width / 3, y=110, width=screen_width / 3, height=100)
+
+        self.labelDistance2Value = tk.Label(text="3000",
+                                            fg="#0000ff",
+                                            justify=CENTER,
+                                            # bg = "#000",
+                                            font="Helvetica 50 bold")
+
+        self.labelDistance2Value.place(x=2 * screen_width / 3, y=110, width=screen_width / 3, height=100)
 
 
 
@@ -64,7 +88,8 @@ class IotGateway_UI:
             self.dataModel.setPumpOff()
 
     def UI_Refresh(self):
-        self.UI_Set_Text(self.labelDistance1Value, self.dataModel.DIS_Value)
+        self.UI_Set_Text(self.labelDistance1Value, self.dataModel.DIS_Value[0])
+        self.UI_Set_Text(self.labelDistance2Value, self.dataModel.DIS_Value[1])
         if self.dataModel.BUTTON_STATE == True:
             self.button.config(image = self.on)
             self.is_on = True

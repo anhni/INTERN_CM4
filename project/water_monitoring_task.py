@@ -6,8 +6,9 @@ class WMT_Status(enum.Enum):
     PUMP_ON = 2
     PUMP_OFF = 3
     STABLE = 4
-    READ_DIS = 5
-    IDLE = 6
+    READ_DIS1 = 5
+    READ_DIS2 = 6
+    IDLE = 7
 
 class waterMonitoringTask:
     PUMP_ON_DELAY = 3000
@@ -16,7 +17,7 @@ class waterMonitoringTask:
     SENSING_DELAY = 500
     IDLE_DELAY = 5000
 
-    DIS_Value = 2999
+    DIS_Value = [2999, 2900]
     BUTTON_STATE = True
 
     def __init__(self,_rs485, _soft_timer):
@@ -60,16 +61,24 @@ class waterMonitoringTask:
         elif self.status == WMT_Status.STABLE:
             if self.soft_timer.is_timer_expired(0) == 1:
                 self.soft_timer.set_timer(0, self.SENSING_DELAY)
-                self.status = WMT_Status.READ_DIS
+                self.status = WMT_Status.READ_DIS1
                 self.rs485.sendReadDistance(9)
                 print("Reading")
 
-        elif self.status == WMT_Status.READ_DIS:
+        elif self.status == WMT_Status.READ_DIS1:
+            if self.soft_timer.is_timer_expired(0) == 1:
+                self.soft_timer.set_timer(0, self.SENSING_DELAY)
+                self.status = WMT_Status.READ_DIS2
+                self.DIS_Value[0] = self.rs485.readDistance()
+                self.rs485.sendReadDistance(12)
+                print("....")
+
+        elif self.status == WMT_Status.READ_DIS2:
             if self.soft_timer.is_timer_expired(0) == 1:
                 self.soft_timer.set_timer(0, self.SENSING_DELAY)
                 self.status = WMT_Status.IDLE
-                self.DIS_Value = self.rs485.readDistance()
-                print("distance = ", self.DIS_Value)
+                self.DIS_Value[1] = self.rs485.readDistance()
+                print("distance = ", self.DIS_Value[0], self.DIS_Value[1])
                 print("Idling")
 
         elif self.status == WMT_Status.IDLE:
