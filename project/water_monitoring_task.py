@@ -28,14 +28,14 @@ class waterMonitoringTask:
 
     def setPumpOn(self):
         print("Pump is On")
-        self.rs485.relayController(1, 1)
+        self.rs485.relayController(2, 1)
 
     def setPumpOff(self):
         print("Pump is Off")
-        self.rs485.relayController(1, 0)
+        self.rs485.relayController(2, 0)
 
     def waterMoniteringTask_Run(self):
-        print("Monitering Water is Running!!")
+        #print("Monitering Water is Running!!")
         if self.status == WMT_Status.INIT:
             print("Pump is On")
             self.soft_timer.set_timer(0, self.PUMP_ON_DELAY)
@@ -69,6 +69,7 @@ class waterMonitoringTask:
                 self.soft_timer.set_timer(0, self.SENSING_DELAY)
                 self.status = WMT_Status.IDLE
                 self.DIS_Value = self.rs485.readDistance()
+                print("distance = "self.DIS_Value)
                 print("Idling")
 
         elif self.status == WMT_Status.IDLE:
