@@ -51,7 +51,7 @@ while True:
     # do khoang cach
     ser.write(distance9)
     print(serial_read_data(ser))
-    time.sleep(2)
+    time.sleep(5)
     ser.write(distance12)
     print(serial_read_data(ser))
-    time.sleep(2)
+    time.sleep(5)
