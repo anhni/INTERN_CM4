@@ -27,13 +27,13 @@ class waterMonitoringTask:
         self.soft_timer = _soft_timer
         return
 
-    def setPumpOn(self):
+    def setPumpOn(self, number):
         print("Pump is On")
-        self.rs485.relayController(1, 1)
+        self.rs485.relayController(number, 1)
 
-    def setPumpOff(self):
+    def setPumpOff(self, number):
         print("Pump is Off")
-        self.rs485.relayController(1, 0)
+        self.rs485.relayController(number, 0)
 
     def waterMoniteringTask_Run(self):
         #print("Monitering Water is Running!!")
