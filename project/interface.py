@@ -7,7 +7,7 @@ class IotGateway_UI:
     def __init__(self,data):
         self.dataModel = data
         print("Init the UI!!")
-        self.is_on = [True, True, True, True, True, True, True, True]
+        self.is_on = [False, False, False, False, False, False, False, False]
         self.window = tk.Tk()
         self.on = PhotoImage(file="on.png")
         self.off = PhotoImage(file="off.png")
@@ -24,43 +24,43 @@ class IotGateway_UI:
         self.Relay1 = Label(self.window, text="RELAY1",fg="#0000ff", font= "Helvetica 50 bold")
         self.Relay1.place(x=0, y=210, width=screen_width/4, height=100)
 
-        self.button2 = Button(self.window, image=self.on, bd=0, command=lambda: self.toggle_button_click(2))
+        self.button2 = Button(self.window, image=self.off, bd=0, command=lambda: self.toggle_button_click(2))
         self.button2.place(x=3* screen_width / 4, y=210)
 
         self.Relay2 = Label(self.window, text="RELAY2", fg="#0000ff", font="Helvetica 50 bold")
         self.Relay2.place(x=2* screen_width / 4, y=210, width=screen_width / 4, height=100)
 
-        self.button3 = Button(self.window, image=self.on, bd=0, command=lambda: self.toggle_button_click(3))
+        self.button3 = Button(self.window, image=self.off, bd=0, command=lambda: self.toggle_button_click(3))
         self.button3.place(x=screen_width / 4, y=310)
 
         self.Relay3 = Label(self.window, text="RELAY3", fg="#0000ff", font="Helvetica 50 bold")
         self.Relay3.place(x=0, y=310, width=screen_width / 4, height=100)
 
-        self.button4 = Button(self.window, image=self.on, bd=0, command=lambda: self.toggle_button_click(4))
+        self.button4 = Button(self.window, image=self.off, bd=0, command=lambda: self.toggle_button_click(4))
         self.button4.place(x=3*screen_width / 4, y=310)
 
         self.Relay4 = Label(self.window, text="RELAY4", fg="#0000ff", font="Helvetica 50 bold")
         self.Relay4.place(x=2*screen_width / 4, y=310, width=screen_width / 4, height=100)
 
-        self.button5 = Button(self.window, image=self.on, bd=0, command=lambda: self.toggle_button_click(5))
+        self.button5 = Button(self.window, image=self.off, bd=0, command=lambda: self.toggle_button_click(5))
         self.button5.place(x=screen_width / 4, y=410)
 
         self.Relay5 = Label(self.window, text="RELAY5", fg="#0000ff", font="Helvetica 50 bold")
         self.Relay5.place(x=0, y=410, width=screen_width / 4, height=100)
 
-        self.button6 = Button(self.window, image=self.on, bd=0, command=lambda: self.toggle_button_click(6))
+        self.button6 = Button(self.window, image=self.off, bd=0, command=lambda: self.toggle_button_click(6))
         self.button6.place(x=3*screen_width / 4, y=410)
 
         self.Relay6 = Label(self.window, text="RELAY6", fg="#0000ff", font="Helvetica 50 bold")
         self.Relay6.place(x=2*screen_width / 4, y=410, width=screen_width / 4, height=100)
 
-        self.button7 = Button(self.window, image=self.on, bd=0, command=lambda: self.toggle_button_click(7))
+        self.button7 = Button(self.window, image=self.off, bd=0, command=lambda: self.toggle_button_click(7))
         self.button7.place(x=screen_width / 4, y=510)
 
         self.Relay7 = Label(self.window, text="RELAY7", fg="#0000ff", font="Helvetica 50 bold")
         self.Relay7.place(x=0, y=510, width=screen_width / 4, height=100)
 
-        self.button8 = Button(self.window, image=self.on, bd=0, command=lambda: self.toggle_button_click(8))
+        self.button8 = Button(self.window, image=self.off, bd=0, command=lambda: self.toggle_button_click(8))
         self.button8.place(x=3*screen_width / 4, y=510)
 
         self.Relay8 = Label(self.window, text="RELAY8", fg="#0000ff", font="Helvetica 50 bold")
@@ -123,13 +123,13 @@ class IotGateway_UI:
             self.UI_Set_Button_text(number, self.off)
             self.is_on[number - 1] = False
             # gửi lệnh tắt relay
-            self.dataModel.setPumpOn(number)
+            self.dataModel.setPumpOff(number)
         else:
             #self.button.config(image=self.on)
             self.UI_Set_Button_text(number, self.on)
             self.is_on[number - 1] = True
             # gửi lệnh bật relay
-            self.dataModel.setPumpOff()
+            self.dataModel.setPumpOn(number)
 
     def UI_Refresh(self):
         self.UI_Set_Value_Text(self.labelDistance1Value, self.dataModel.DIS_Value[0])
