@@ -7,7 +7,7 @@ class IotGateway_UI:
     def __init__(self,data):
         self.dataModel = data
         print("Init the UI!!")
-        self.is_on = [True, True, True, True, True, True, True, True]
+        self.is_on = [True, False, False, False, False, False, False, False]
         self.window = tk.Tk()
         self.on = PhotoImage(file="on.png")
         self.off = PhotoImage(file="off.png")
