@@ -12,9 +12,9 @@ class Main_UI:
         print("Init the UI")
         
         self.window = Tk()
-        self.on = PhotoImage(file="Utilities\Images\on_button.png")
-        self.off = PhotoImage(file="Utilities\Images\off_button.png")
-        self.logo = PhotoImage(file="Utilities\Images\on_button.png")
+        self.on = PhotoImage(file="Ni1\Utilities\Images\on_button.png")
+        self.off = PhotoImage(file="Ni1\Utilities\Images\off_button.png")
+        # self.logo = PhotoImage(file="Utilities\Images\on_button.png")
 
         for i in range(0, self.numButton):
             self.is_on.append(True)
