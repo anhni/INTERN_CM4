@@ -7,7 +7,7 @@ class IotGateway_UI:
     def __init__(self,data):
         self.dataModel = data
         print("Init the UI!!")
-        self.is_on = [True, False, False, False, False, False, False, False]
+        self.is_on = [False, False, False, False, False, False, False, False]
         self.window = tk.Tk()
         self.on = PhotoImage(file="on.png")
         self.off = PhotoImage(file="off.png")
@@ -123,13 +123,13 @@ class IotGateway_UI:
             self.UI_Set_Button_text(number, self.off)
             self.is_on[number - 1] = False
             # gửi lệnh tắt relay
-            self.dataModel.setPumpOn(number)
+            self.dataModel.setPumpOff(number)
         else:
             #self.button.config(image=self.on)
             self.UI_Set_Button_text(number, self.on)
             self.is_on[number - 1] = True
             # gửi lệnh bật relay
-            self.dataModel.setPumpOff(number)
+            self.dataModel.setPumpOn(number)
 
     def UI_Refresh(self):
         self.UI_Set_Value_Text(self.labelDistance1Value, self.dataModel.DIS_Value[0])
