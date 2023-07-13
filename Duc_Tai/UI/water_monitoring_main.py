@@ -25,11 +25,10 @@ input0 = ["0106000000FF", "010600000000",
           "0F06000000FF", "0F0600000000",
           "0C0300050001", "0C0600080009"]
 
-port = Utilities.modbus485.RS485.getPort()
-print(port)
-# bau = "9600"
-ser = Utilities.modbus485.RS485.setSerial(0,port,9600)
-m485 = Utilities.modbus485.RS485(input0)
+
+rs485 = Utilities.modbus485.RS485(input0)
+port = rs485.getPort()
+rs485.setSerial(port,9600)
 watermonitoring_timer = softwaretimer()
 
 scheduler = Scheduler()
@@ -41,10 +40,10 @@ task2 = PrivateTasks.private_task_2.Task2()
 
 # ledblink = PrivateTasks.led_blinky_task.LedBlinkyTask(soft_timer)
 
-watermonitoring = PrivateTasks.water_monitoring_task.WaterMonitoringTask(watermonitoring_timer, m485)
+watermonitoring = PrivateTasks.water_monitoring_task.WaterMonitoringTask(watermonitoring_timer, rs485)
 main_ui = PrivateTasks.main_ui_task.Main_UI()
 # rapidoserver = PrivateTasks.rapido_server_task.RapidoServerTask()
-
+main_ui.init_fun(watermonitoring)
 # main_ui.init_fun()
 # main_ui.UI_Refresh()
 
@@ -61,7 +60,7 @@ scheduler.SCH_Add_Task(main_ui.UI_Refresh, 1, 100)
 # scheduler.SCH_Add_Task(watermonitoring.WaterMonitoringTask_Run, 1, 1)
 # scheduler.SCH_Add_Task(watermonitoring.WaterMonitoringTask_Run, 1, 1)
 
-main_ui.init_fun(watermonitoring)
+# main_ui.init_fun(watermonitoring)
 while True:
     # main_ui.UI_Refresh()
     scheduler.SCH_Update()

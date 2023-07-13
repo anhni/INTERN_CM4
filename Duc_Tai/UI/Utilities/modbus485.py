@@ -35,6 +35,9 @@ relay_OFF = [[1, 6, 0, 0, 0, 0, 137, 202],
 [7, 6, 0, 0, 0, 0, 137, 172],
 [8, 6, 0, 0, 0, 0, 137, 83]]
 
+distance = [[9, 3, 0, 5, 0, 1, 149, 67],
+            [12, 3, 0, 5, 0, 1, 149, 22]]
+
 class RS485:
     def __init__(self,input):
         self.input = input
@@ -112,6 +115,7 @@ class RS485:
     #         print(self.serial_read_data(self.serial))
     
     def relayController(self, number, state):
+        print("replay")
         if number < numberRelay + 1:
             if state == 1:
                 self.serial.write(relay_ON[number - 1])                                                                                                         
@@ -121,3 +125,13 @@ class RS485:
                 print(self.serial_read_data(self.serial))
         else:
             print("Out of range of number Relay")
+    def Require_Distance(self,number):
+        if number == 9:
+            self.serial.write(distance[0])
+        if number == 12:
+            self.serial.write(distance[1])
+        else :
+            print("Requirement Fail!!!")
+    
+    def Recive_Distance(self):
+        print(self.serial_read_data(self.serial))
