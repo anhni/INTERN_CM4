@@ -37,7 +37,7 @@ iotgateway_ui = IotGateway_UI(watermonitoring)
 
 scheduler.SCH_Add_Task(iotgateway_ui.UI_Refresh, 1, 100)
 scheduler.SCH_Add_Task(watermonitoring_timer.Timer_Run, 1, 100)
-scheduler.SCH_Add_Task(watermonitoring.waterMoniteringTask_Run,1 ,1)
+scheduler.SCH_Add_Task(watermonitoring.waterMoniteringTask_Run,1 ,100)
 # scheduler.SCH_Add_Task(task1.Task1_Run, 1000, 5000)
 # scheduler.SCH_Add_Task(task2.Task2_Run, 3000, 0)
 # scheduler.SCH_Add_Task(task3.Task1_Run, 4000, 5000)

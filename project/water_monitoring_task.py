@@ -12,9 +12,9 @@ class WMT_Status(enum.Enum):
 class waterMonitoringTask:
     PUMP_ON_DELAY = 3000
     PUMP_OFF_DELAY = 5000
-    STABLE_DELAY = 20000
+    STABLE_DELAY = 5000
     SENSING_DELAY = 500
-    IDLE_DELAY = 10000
+    IDLE_DELAY = 5000
 
     DIS_Value = 2999
     BUTTON_STATE = True
@@ -28,11 +28,11 @@ class waterMonitoringTask:
 
     def setPumpOn(self):
         print("Pump is On")
-        self.rs485.relayController(2, 1)
+        self.rs485.relayController(1, 1)
 
     def setPumpOff(self):
         print("Pump is Off")
-        self.rs485.relayController(2, 0)
+        self.rs485.relayController(1, 0)
 
     def waterMoniteringTask_Run(self):
         #print("Monitering Water is Running!!")
