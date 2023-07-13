@@ -115,13 +115,27 @@ class Main_UI:
                                 # bg = "#000",
                                 font="Helvetica 60 bold")
         self.labelDistance1.place(x=0, y=600, width=screen_width / 3, height=100)
+        self.labelDistance1Value = tk.Label(text="3000",
+                                           fg="#0000ff",
+                                           justify=CENTER,
+                                           # bg = "#000",
+                                           font="Helvetica 50 bold")
+
+        self.labelDistance1Value.place(x=600, y=600, width=screen_width / 3, height=100)
 
         self.labelDistance2 = tk.Label(text="Distance 12",
                                 fg="#0000ff",
                                 justify=CENTER,
                                 # bg = "#000",
                                 font="Helvetica 60 bold")
-        self.labelDistance2.place(x=0, y=800, width=screen_width / 3, height=100)
+        self.labelDistance2.place(x=0, y=700, width=screen_width / 3, height=100)
+        self.labelDistance2Value = tk.Label(text="3000",
+                                           fg="#0000ff",
+                                           justify=CENTER,
+                                           # bg = "#000",
+                                           font="Helvetica 50 bold")
+
+        self.labelDistance2Value.place(x=600, y=700, width=screen_width / 3, height=100)
         # self.logo_button.place(x=screen_width - 600, y=300, width=500)
         # print("hehe")
         # self.window.update()
@@ -143,8 +157,8 @@ class Main_UI:
 
 
     def UI_Refresh(self):
-        self.UI_Set_Value_Text(self.labelDistance1, self.dataModel.DIS_Value[0])
-        self.UI_Set_Value_Text(self.labelDistance2, self.dataModel.DIS_Value[1])
+        self.UI_Set_Text(self.labelDistance1Value, self.dataModel.DIS_Value[0])
+        self.UI_Set_Text(self.labelDistance2Value, self.dataModel.DIS_Value[1])
         if self.dataModel.BUTTON_STATE == True:
             self.on_button.config(image = self.on)
             self.is_on = True

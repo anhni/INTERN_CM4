@@ -76,7 +76,7 @@ class RS485:
             c2.append(ba[1])
         return c2
     
-    def getPort():
+    def getPort(self):
         ports = serial.tools.list_ports.comports()
         N = len(ports)
         commPort = "None"

@@ -7,7 +7,7 @@ import PrivateTasks.rapido_server_task
 import Utilities.modbus485
 import serial.tools.list_ports
 import serial
-from RS485.RS485_class import *
+
 from Scheduler.scheduler import  *
 from Utilities.softwaretimer import *
 from Utilities.modbus485 import *
