@@ -61,7 +61,7 @@ class Main_UI:
 
         self.main_frame.pack(side = 'right')
         self.main_frame.pack_propagate(False)
-        self.main_frame.configure(width = 4*self.screen_width / 5 - 5, height = self.screen_height,
+        self.main_frame.configure(width = 4*self.screen_width / 5 - 30, height = self.screen_height,
                              bg = 'dark grey',
                              highlightbackground='Black',
                              highlightthickness=10)
