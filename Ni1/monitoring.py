@@ -10,6 +10,8 @@ class Status(enum.Enum):
     PUMP_OFF3 = 7
     STABLE = 8
     IDLE = 9
+    SENSOR1 = 10
+    SENSOR2 = 11
 
 class Monitoring:
     PUMP_ON_DELAY = [3000, 0, 3000]
@@ -26,6 +28,7 @@ class Monitoring:
 
     def __init__(self, _soft_timer, _rs485):
         self.status = Status.INIT
+        self.distanceStatus = Status.INIT
         self.soft_timer = _soft_timer
         self.rs485 = _rs485
         for i in range(0, self.numButton):
@@ -37,6 +40,23 @@ class Monitoring:
 
     def distanceController(self, number):
         self.rs485.distanceController(number)
+
+    def getDistance(self):
+        if self.distanceStatus == Status.INIT:
+            self.soft_timer.setTimer(5, self.SENSING_DELAY)
+            self.distanceStatus == Status.SENSOR1
+            self.distanceController(9)
+        elif self.distanceStatus == Status.SENSOR1:
+            self.distance1_value = self.rs485.serial_read_data()
+            self.soft_timer.setTimer(5, self.SENSING_DELAY)
+            self.distanceStatus == Status.SENSOR2
+            self.distanceController(12)
+        elif self.distanceStatus == Status.SENSOR2:
+            self.distance2_value = self.rs485.serial_read_data()
+            self.distanceStatus = Status.INIT
+        else:
+            self.distanceStatus = Status.INIT
+
 
     def MonitoringTask_Run(self):
         if self.status == Status.INIT:
