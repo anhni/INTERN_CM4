@@ -403,7 +403,7 @@ class Main_UI:
         self.boxLiquid1.grid(column=0, row=0, padx=60, pady=10, sticky=tk.NS)
 
         self.boxLiquid1_1 = Canvas(frame, width = 90, height=10, bg="white")
-        self.boxLiquid1_1.create_rectangle(4, 30, 89, 161, fill="Chocolate")
+        self.boxLiquid1_1.create_rectangle(3, 72, 89, 161, fill="Chocolate")
         self.boxLiquid1_1.create_text(50,120,text="30%",font="Helvetica 14 bold")
         self.boxLiquid1_1.grid(column=0, row=0, padx=60, pady=10, sticky=tk.NS)
         
@@ -419,8 +419,8 @@ class Main_UI:
         self.boxLiquid2.grid(column=1, row=0, padx=60, pady=10, sticky=tk.NS)
 
         self.boxLiquid2_1 = Canvas(frame, width = 90, height=10, bg="white")
-        self.boxLiquid2_1.create_rectangle(4, 52, 89, 161, fill="DodgerBlue")
-        self.boxLiquid2_1.create_text(50,100,text="60%",font="Helvetica 14 bold")
+        self.boxLiquid2_1.create_rectangle(3, 92, 89, 161, fill="DodgerBlue")
+        self.boxLiquid2_1.create_text(50,120,text="60%",font="Helvetica 14 bold")
         self.boxLiquid2_1.grid(column=1, row=0, padx=60, pady=10, sticky=tk.NS)
 
         # Liquid 3
@@ -435,7 +435,7 @@ class Main_UI:
         self.boxLiquid3.grid(column=2, row=0, padx=60, pady=10, sticky=tk.NS)
 
         self.boxLiquid3_1 = Canvas(frame, width = 90, height=10, bg="white")
-        self.boxLiquid3_1.create_rectangle(4, 52, 89, 161, fill="Brown")
+        self.boxLiquid3_1.create_rectangle(4, 82, 89, 161, fill="Brown")
         self.boxLiquid3_1.create_text(50,80,text="60%",font="Helvetica 14 bold")
         self.boxLiquid3_1.grid(column=2, row=0, padx=60, pady=10, sticky=tk.NS)
 
