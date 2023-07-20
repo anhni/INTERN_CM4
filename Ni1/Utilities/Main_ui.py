@@ -499,7 +499,7 @@ class Main_UI:
             # self.dataModel.relayController(number, state = 0)
             self.dataModel.BUTTON_STATE[number] = False
         else:
-            self.on_button[number].config(text="ON", bg="gold")
+            self.on_button[number].config(text="ON", bg="LimeGreen")
             self.is_on[number] = True
             # self.dataModel.relayController(number, state = 1)
             self.dataModel.BUTTON_STATE[number] = True
