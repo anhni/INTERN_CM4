@@ -35,6 +35,9 @@ class Monitoring:
     def relayController(self, number, state):
         self.rs485.relayController(number, state)
 
+    def distanceController(self, number):
+        self.rs485.distanceController(number)
+
     def MonitoringTask_Run(self):
         if self.status == Status.INIT:
             if self.PUMP_ON_DELAY[0] == 0:
