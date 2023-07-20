@@ -36,8 +36,8 @@ class Main_UI:
             self.on_button.append(Button(self.window, bd=0, justify=RIGHT))
             # self.on_button[i].config(command=lambda:self.toggle_button_click(i))
 
-        # self.window.attributes('-fullscreen', True)
-        self.window.geometry("1024x600")
+        self.window.attributes('-fullscreen', True)
+        # self.window.geometry("1024x600")
         self.window.title("Rapido Project")
         self.window.configure(bg='SlateGrey', highlightbackground='SlateGrey',
                               highlightthickness=10)
