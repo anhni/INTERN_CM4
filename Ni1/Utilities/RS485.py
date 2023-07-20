@@ -34,6 +34,9 @@ relay_OFF = [[1, 6, 0, 0, 0, 0, 137, 202],
 [7, 6, 0, 0, 0, 0, 137, 172],
 [8, 6, 0, 0, 0, 0, 137, 83]]
 
+distance1_ON = [9, 3, 0, 5, 0, 1, 149, 67]
+distance2_ON = [12, 3, 0, 5, 0, 1, 149, 22]
+
 class RS485:
     # def __init__(self):
     #     self.serial
@@ -123,3 +126,13 @@ class RS485:
                 print(self.serial_read_data())
         else:
             print("Out of range of number Relay")
+    
+    def distanceController(self, number):
+        if number == 9:
+            self.serial.write(distance1_ON)                                                                                                         
+            return (self.serial_read_data()) 
+        elif number == 12:
+            self.serial.write(distance2_ON)                                                                                                         
+            return (self.serial_read_data())
+        else:
+            print("Wrong number distance sensor")

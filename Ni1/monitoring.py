@@ -13,7 +13,11 @@ class Monitoring:
     SENSING_DELAY = 500
     IDLE_DELAY = 10000
     BUTTON_STATE = []
-    numButton = 6
+    numButton = 8
+
+    distance1_value = 1
+    distance2_value = 2
+
 
     def __init__(self, _soft_timer, _rs485):
         self.status = Status.INIT
@@ -23,6 +27,9 @@ class Monitoring:
             self.BUTTON_STATE.append(True)
         return
     
+    def relayController(self, number, state):
+        self.rs485.relayController(number, state)
+
     def MonitoringTask_Run(self):
         if self.status == Status.INIT:
             self.soft_timer.setTimer(0, self.PUMP_ON_DELAY)
@@ -35,4 +42,4 @@ class Monitoring:
         elif self.status == Status.PUMP_OFF:
             self.soft_timer.setTimer(0, self.STABLE_DELAY)
             self.status = Status.STABLE
-            self.rs485.relayController(1, 0)
+            self.rs485.distanceController(1)
