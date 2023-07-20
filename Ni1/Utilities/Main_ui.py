@@ -61,7 +61,7 @@ class Main_UI:
 
         self.main_frame.pack(side = 'right')
         self.main_frame.pack_propagate(False)
-        self.main_frame.configure(width = 4*self.screen_width / 5 - 30, height = self.screen_height,
+        self.main_frame.configure(width = 4*self.screen_width / 5, height = self.screen_height,
                              bg = 'dark grey',
                              highlightbackground='Black',
                              highlightthickness=10)
@@ -70,7 +70,7 @@ class Main_UI:
         self.home_button = Button(self.option_frame, text='Home', font="Helvetica 14 bold",
                                   command=lambda: self.indicate(self.home_button,self.home_page),
                                   activebackground = 'gray',
-                                  width = 15, height = 1,
+                                  width = 12, height = 1,
                                   foreground = 'White',
                                   bg = 'MediumBlue',
                                   bd = 5)
@@ -80,7 +80,7 @@ class Main_UI:
         self.auto_button = Button(self.option_frame, text='Automative', font="Helvetica 14 bold",
                                   command=lambda: self.indicate(self.auto_button, self.automative_page),
                                   activebackground = 'gray',
-                                  width = 15, height = 1,
+                                  width = 12, height = 1,
                                   foreground = 'White',
                                   bg = 'RoyalBlue',
                                   bd = 5)
@@ -90,7 +90,7 @@ class Main_UI:
         self.manual_button = Button(self.option_frame, text='Manual', font="Helvetica 14 bold",
                                     command=lambda: self.indicate(self.manual_button, self.manual_page),
                                     activebackground = 'gray',
-                                    width = 15, height = 1,
+                                    width = 12, height = 1,
                                     foreground = 'White',
                                     bg = 'RoyalBlue',
                                     bd = 5)
@@ -100,7 +100,7 @@ class Main_UI:
         self.ai_button = Button(self.option_frame, text='AI', font="Helvetica 14 bold",
                                 command=lambda: self.indicate(self.ai_button, self.ai_page),
                                 activebackground = 'gray',
-                                width = 15, height = 1,
+                                width = 12, height = 1,
                                 foreground = 'White',
                                 bg = 'RoyalBlue',
                                 bd = 5)
@@ -110,7 +110,7 @@ class Main_UI:
         self.exit_button = Button(self.option_frame, text='Exit', font="Helvetica 14 bold",
                                   command=self.window.destroy,
                                   activebackground = 'gray',
-                                  width = 15, height = 1,
+                                  width = 12, height = 1,
                                   foreground = 'White',
                                   bg = 'Red',
                                   bd = 5)
