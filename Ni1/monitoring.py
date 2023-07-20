@@ -10,13 +10,10 @@ class Status(enum.Enum):
     PUMP_OFF3 = 7
     STABLE = 8
     IDLE = 9
-<<<<<<< HEAD
     RELAY_IN = 12
     RELAY_OUT = 13
-=======
     SENSOR1 = 10
     SENSOR2 = 11
->>>>>>> e6e7d1ba0d6f8f831e18aad66e69a66e4e67800e
 
 class Monitoring:
     PUMP_ON_DELAY = [3000, 4000, 5000, 0, 1000, 0]
