@@ -10,15 +10,18 @@ class Status(enum.Enum):
     PUMP_OFF3 = 7
     STABLE = 8
     IDLE = 9
+    RELAY_IN = 10
+    RELAY_OUT = 11
 
 class Monitoring:
-    PUMP_ON_DELAY = [3000, 0, 3000]
+    PUMP_ON_DELAY = [3000, 4000, 5000, 0, 1000, 0]
     PUMP_OFF_DELAY = [5000, 5000, 5000]
-    STABLE_DELAY = 20000
+    STABLE_DELAY = 5000
     SENSING_DELAY = 500
     IDLE_DELAY = 10000
     BUTTON_STATE = []
     numButton = 8
+    count = 0
 
     distance1_value = 1
     distance2_value = 2
@@ -106,3 +109,88 @@ class Monitoring:
         else:
             print("Invalid status")
         return
+
+    def MonitoringTask_Run1(self):
+        if self.status == Status.INIT:
+            print("Init")
+            self.status = Status.RELAY_IN
+            self.soft_timer.setTimer(0, self.PUMP_ON_DELAY[0])
+            self.soft_timer.setTimer(1, self.PUMP_ON_DELAY[1])
+            self.soft_timer.setTimer(2, self.PUMP_ON_DELAY[2])
+            if self.PUMP_ON_DELAY[0]:
+                print("1: On")
+                self.BUTTON_STATE[0] = True
+            else:
+                self.count += 1
+            if self.PUMP_ON_DELAY[1]:
+                print("2: On")
+                self.BUTTON_STATE[1] = True
+            else:
+                self.count += 1
+            if self.PUMP_ON_DELAY[2]:
+                print("3: On")
+                self.BUTTON_STATE[2] = True
+            else:
+                self.count += 1
+
+        if self.status == Status.RELAY_IN:
+            if self.soft_timer.isExpire(0) == 1:
+                print("1: Off")
+                self.count += 1
+                self.soft_timer.setTimer(0, 0)
+            if self.soft_timer.isExpire(1) == 1:
+                print("2: Off")
+                self.count += 1
+                self.soft_timer.setTimer(1, 0)
+            if self.soft_timer.isExpire(2) == 1:
+                print("3: Off")
+                self.count += 1
+                self.soft_timer.setTimer(2, 0)
+
+            if self.count == 3:
+                self.count = 0
+                self.status = Status.STABLE
+                self.soft_timer.setTimer(0, self.STABLE_DELAY)
+
+        if self.status == Status.STABLE:
+            if self.soft_timer.isExpire(0) == 1:
+                self.status = Status.RELAY_OUT
+                self.soft_timer.setTimer(3, self.PUMP_ON_DELAY[3])
+                self.soft_timer.setTimer(4, self.PUMP_ON_DELAY[4])
+                self.soft_timer.setTimer(5, self.PUMP_ON_DELAY[5])
+                if self.PUMP_ON_DELAY[3]:
+                    print("4: On")
+                    self.BUTTON_STATE[3] = True
+                else:
+                    self.count += 1
+                if self.PUMP_ON_DELAY[4]:
+                    print("5: On")
+                    self.BUTTON_STATE[4] = True
+                else:
+                    self.count += 1
+                if self.PUMP_ON_DELAY[5]:
+                    print("6: On")
+                    self.BUTTON_STATE[5] = True
+                else:
+                    self.count += 1
+
+        if self.status == Status.RELAY_OUT:
+            if self.soft_timer.isExpire(3) == 1:
+                print("4: Off")
+                self.count += 1
+                self.soft_timer.setTimer(3, 0)
+            if self.soft_timer.isExpire(4) == 1:
+                print("5: Off")
+                self.count += 1
+                self.soft_timer.setTimer(4, 0)
+            if self.soft_timer.isExpire(5) == 1:
+                print("6: Off")
+                self.count += 1
+                self.soft_timer.setTimer(5, 0)
+
+            if self.count == 3:
+                self.count = 0
+                print("End")
+
+
+

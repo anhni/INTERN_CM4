@@ -20,7 +20,7 @@ main_ui = Main_UI(monitoring)
 
 #scheduler.SCH_Add_Task(main_ui.UI_Refresh, 1, 100)
 scheduler.SCH_Add_Task(monitoring_timer.timerRun, 1, 100)
-scheduler.SCH_Add_Task(monitoring.MonitoringTask_Run, 1, 1)
+scheduler.SCH_Add_Task(monitoring.MonitoringTask_Run1, 1, 1)
 
 while True:
     scheduler.SCH_Update()
