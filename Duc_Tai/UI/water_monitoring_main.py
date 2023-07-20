@@ -41,9 +41,9 @@ task2 = PrivateTasks.private_task_2.Task2()
 # ledblink = PrivateTasks.led_blinky_task.LedBlinkyTask(soft_timer)
 
 watermonitoring = PrivateTasks.water_monitoring_task.WaterMonitoringTask(watermonitoring_timer, rs485)
-main_ui = PrivateTasks.main_ui_task.Main_UI()
+main_ui = PrivateTasks.main_ui_task.Main_UI(watermonitoring)
 # rapidoserver = PrivateTasks.rapido_server_task.RapidoServerTask()
-main_ui.init_fun(watermonitoring)
+# main_ui.init_fun(watermonitoring)
 # main_ui.init_fun()
 # main_ui.UI_Refresh()
 
@@ -59,8 +59,8 @@ scheduler.SCH_Add_Task(main_ui.UI_Refresh, 1, 100)
 #scheduler.SCH_Add_Task(rapidoserver.uploadData, 1, 1000)
 # scheduler.SCH_Add_Task(watermonitoring.WaterMonitoringTask_Run, 1, 1)
 # scheduler.SCH_Add_Task(watermonitoring.WaterMonitoringTask_Run, 1, 1)
-
-# main_ui.init_fun(watermonitoring)
+#
+# main_ui.i(watermonitoring)
 while True:
     # main_ui.UI_Refresh()
     scheduler.SCH_Update()
