@@ -204,7 +204,7 @@ class Main_UI:
         self.ratioBox3.grid(column=3, row=1, padx=12, pady=2, sticky=tk.NS)
 
         self.totalLiquid = tk.Label(self.bottom_manual_frame, text="Total liquid volume",
-                               width=14, height=1, bg='dark gray',
+                               width=18, height=1, bg='dark gray',
                                font="Helvetica 12 bold")
         self.totalLiquid.grid(column=0, row=2, padx=12, pady=10, sticky=tk.NS, columnspan=2)
         self.totalBox = ttk.Combobox(self.bottom_manual_frame, values=[1000,2000,3000])
@@ -226,17 +226,17 @@ class Main_UI:
                                font="Helvetica 12 bold")
         self.outputLabel0.grid(column=0, row=4, padx=12, pady=2, sticky=tk.NS)
 
-        self.outputLabel1 = tk.Label(self.bottom_manual_frame, text="Relay 1",
+        self.outputLabel1 = tk.Label(self.bottom_manual_frame, text="Relay 4",
                                width=10, height=1, bg='dark gray',
                                font="Helvetica 12 bold")
         self.outputLabel1.grid(column=1, row=3, padx=12, pady=2, sticky=tk.NS)
 
-        self.outputLabel2 = tk.Label(self.bottom_manual_frame, text="Relay 2 ",
+        self.outputLabel2 = tk.Label(self.bottom_manual_frame, text="Relay 5 ",
                                width=10, height=1, bg='dark gray',
                                font="Helvetica 12 bold")
         self.outputLabel2.grid(column=2, row=3, padx=12, pady=2, sticky=tk.NS)
 
-        self.outputLabel3 = tk.Label(self.bottom_manual_frame, text="Relay 3",
+        self.outputLabel3 = tk.Label(self.bottom_manual_frame, text="Relay 6",
                                width=10, height=1, bg='dark gray',
                                font="Helvetica 12 bold")
         self.outputLabel3.grid(column=3, row=3, padx=12, pady=2, sticky=tk.NS)
