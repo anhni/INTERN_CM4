@@ -36,7 +36,6 @@ class WaterMonitoringTask:
     # TEMP_Value = 0
     # TEMP_DHT_Value = 0
     # HUMI_DHT_Value = 0
-    # BUTTON_STATE = True
 
     # rapidoServer = RapidoServerTask()
     PUMP_ON_DELAY = 3000
@@ -46,24 +45,26 @@ class WaterMonitoringTask:
     IDLE_DELAY = 5000
 
     DIS_Value = [2999, 2900]
-    BUTTON_STATE = True
+    BUTTON_STATE = []
 
 
     def __init__(self, _soft_timer, _rs485):
         self.status = WMR_Status.INIT
         self.soft_timer = _soft_timer
         self.rs485 = _rs485
+        for i in range(0,8):
+            self.BUTTON_STATE.append(True)
         print(self.rs485)
         return
 
     def setPumpOn(self):
         print("PUMP is ON")
-        self.rs485.relayController(1,1)
+        #self.rs485.relayController(1,1)
         return
 
     def setPumpOff(self):
         print("PUMP is OFF")
-        self.rs485.relayController(1,0)
+        #self.rs485.relayController(1,0)
         return
 
     def waterMoniteringTask_Run(self):
