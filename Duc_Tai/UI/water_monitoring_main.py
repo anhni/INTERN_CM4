@@ -56,6 +56,7 @@ main_ui = PrivateTasks.main_ui_task.Main_UI(watermonitoring)
 # scheduler.SCH_Add_Task(main_ui.UI_Refresh, 1, 100)
 
 scheduler.SCH_Add_Task(main_ui.UI_Refresh, 1, 100)
+
 #scheduler.SCH_Add_Task(rapidoserver.uploadData, 1, 1000)
 # scheduler.SCH_Add_Task(watermonitoring.WaterMonitoringTask_Run, 1, 1)
 # scheduler.SCH_Add_Task(watermonitoring.WaterMonitoringTask_Run, 1, 1)
