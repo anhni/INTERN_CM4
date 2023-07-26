@@ -16,9 +16,15 @@ class Main_UI:
     numButton = 8
     is_on = []
     on_button = []
-    inputRatio = []
-    outputRatio = []
+    inputRatio = [0,0,0]
+    outputRatio = [0,0,0]
     ratio_value = [0,1,2,3,4,5]
+    max_liquid_box = 5
+    min_liquid_box = 160
+    # Ex change ratio 24000ml ~ 100%
+    exchange_ratio = 24000/100
+    # Time exchange 200ml/1000ms => 5ms/1ml
+    time_exchange = 5
     page = page_Status.HOME_PAGE
     
     def __init__(self, data):
@@ -36,8 +42,8 @@ class Main_UI:
             self.on_button.append(Button(self.window, bd=0, justify=RIGHT))
             # self.on_button[i].config(command=lambda:self.toggle_button_click(i))
 
-        self.window.attributes('-fullscreen', True)
-        # self.window.geometry("1024x600")
+        # self.window.attributes('-fullscreen', True)
+        self.window.geometry("1024x600")
         self.window.title("Rapido Project")
         self.window.configure(bg='SlateGrey', highlightbackground='SlateGrey',
                               highlightthickness=10)
@@ -118,6 +124,7 @@ class Main_UI:
 
         # first time come to GUI
         self.indicate(self.home_button,self.home_page)
+        self.dataModel.getDistanceAll()
     
     def indicate(self, lb, page):
         # unHighlight buttons
@@ -253,10 +260,18 @@ class Main_UI:
         self.outputRatioBox3.current(0)
         self.outputRatioBox3.grid(column=3, row=4, padx=12, pady=2, sticky=tk.NS)
 
+        self.totalLiquid1 = tk.Label(self.bottom_manual_frame, text="Side liquid volume",
+                               width=18, height=1, bg='dark gray',
+                               font="Helvetica 12 bold")
+        self.totalLiquid1.grid(column=0, row=5, padx=12, pady=10, sticky=tk.NS, columnspan=2)
+        self.totalBox1 = ttk.Combobox(self.bottom_manual_frame, values=[10000,20000,30000])
+        self.totalBox1.current(0)
+        self.totalBox1.grid(column=2, row=5, padx=12, pady=10, sticky=tk.NS)
+
         self.outputEnter = tk.Button(self.bottom_manual_frame, text="Enter values",
                                      command=lambda:self.get_value(),
                                      width = 15, height = 1)
-        self.outputEnter.grid(column=1, row=5, padx=12, pady=10, sticky=tk.N, columnspan=2)
+        self.outputEnter.grid(column=3, row=5, padx=12, pady=10, sticky=tk.N)
     
     def manual_page(self):
         self.page = page_Status.MANUAL_PAGE
@@ -403,8 +418,8 @@ class Main_UI:
         self.boxLiquid1.grid(column=0, row=0, padx=60, pady=10, sticky=tk.NS)
 
         self.boxLiquid1_1 = Canvas(frame, width = 90, height=10, bg="white")
-        self.boxLiquid1_1.create_rectangle(3, 72, 89, 161, fill="Chocolate")
-        self.boxLiquid1_1.create_text(50,120,text="30%",font="Helvetica 14 bold")
+        # self.boxLiquid1_1.create_rectangle(3, 72, 89, 161, fill="Chocolate")
+        # self.boxLiquid1_1.create_text(50,120,text="30%",font="Helvetica 14 bold")
         self.boxLiquid1_1.grid(column=0, row=0, padx=60, pady=10, sticky=tk.NS)
         
         # Liquid 2
@@ -419,8 +434,8 @@ class Main_UI:
         self.boxLiquid2.grid(column=1, row=0, padx=60, pady=10, sticky=tk.NS)
 
         self.boxLiquid2_1 = Canvas(frame, width = 90, height=10, bg="white")
-        self.boxLiquid2_1.create_rectangle(3, 92, 89, 161, fill="DodgerBlue")
-        self.boxLiquid2_1.create_text(50,120,text="60%",font="Helvetica 14 bold")
+        # self.boxLiquid2_1.create_rectangle(3, 92, 89, 161, fill="DodgerBlue")
+        # self.boxLiquid2_1.create_text(50,120,text="60%",font="Helvetica 14 bold")
         self.boxLiquid2_1.grid(column=1, row=0, padx=60, pady=10, sticky=tk.NS)
 
         # Liquid 3
@@ -435,47 +450,110 @@ class Main_UI:
         self.boxLiquid3.grid(column=2, row=0, padx=60, pady=10, sticky=tk.NS)
 
         self.boxLiquid3_1 = Canvas(frame, width = 90, height=10, bg="white")
-        self.boxLiquid3_1.create_rectangle(4, 82, 89, 161, fill="Brown")
-        self.boxLiquid3_1.create_text(50,80,text="60%",font="Helvetica 14 bold")
+        # self.boxLiquid3_1.create_rectangle(4, 82, 89, 161, fill="Brown")
+        # self.boxLiquid3_1.create_text(50,120,text="60%",font="Helvetica 14 bold")
         self.boxLiquid3_1.grid(column=2, row=0, padx=60, pady=10, sticky=tk.NS)
 
     def get_value(self):
-        if int(self.ratioBox1.get()) + int(self.ratioBox2.get()) + int(self.ratioBox3.get()) != 0:
-            self.inputRatio.append(self.ratioBox1.get())
-            self.inputRatio.append(self.ratioBox2.get())
-            self.inputRatio.append(self.ratioBox3.get())
-
-            self.outputRatio.append(self.outputRatioBox1.get())
-            self.outputRatio.append(self.outputRatioBox2.get())
-            self.outputRatio.append(self.outputRatioBox3.get())
-            
-            if int(self.outputRatioBox1.get()) + int(self.outputRatioBox2.get()) + int(self.outputRatioBox3.get()) == 0:
-                response = mbox.askquestion("Output setting", "Are you sure to not activate any relay for output?")
-                if response == "yes":
-                    print(self.inputRatio)
-                    print(self.outputRatio)
-                elif response == "no":
-                    print("The user said no.")
-                else:
-                    print("The user canceled.")
+        self.sensorValueConvert()
+        
+        temp = int(self.ratioBox1.get()) + int(self.ratioBox2.get()) + int(self.ratioBox3.get())       
+        
+        if int(self.totalBox.get()) >= 0 and int(self.totalBox1.get()) >= 0:
+            if temp != 0: 
+                if self.input_check():
+                    self.output_check()                           
             else:
-                response = mbox.askquestion("Output setting", "Are you sure to enter these values?")
+                response = mbox.askquestion("Ratio", "Are you sure not to activate any relay for input?")
                 if response == "yes":
-                    print(self.inputRatio)
-                    print(self.outputRatio)
+                    self.output_check()
                 elif response == "no":
                     print("The user said no.")
                 else:
-                    print("The user canceled.")
+                    print("The user canceled.")        
         else:
-            mbox.showwarning("Ratio", "Please setting ratio value!!!")
+            mbox.showwarning("Ratio", "Please setting total luiquid value!!!")
 
+        # else:
+        #     mbox.showwarning("Ratio", "Please setting ratio value!!!")
+    
+    def input_check(self):
+        temp = int(self.ratioBox1.get()) + int(self.ratioBox2.get()) + int(self.ratioBox3.get())
+        return_value = 1 
+        if int(self.totalBox.get())*int(self.ratioBox1.get())/temp > self.liquid1Percent*self.exchange_ratio:
+            mbox.showwarning("Ratio", "Luiquid 1 is not enough!!! Please re-setting luiquid 1 ratio value!!!")
+            return_value = 0 
+        if int(self.totalBox.get())*int(self.ratioBox2.get())/temp > self.liquid2Percent*self.exchange_ratio:
+            mbox.showwarning("Ratio", "Luiquid 2 is not enough!!! Please re-setting luiquid 2 ratio value!!!")
+            return_value = 0 
+        if int(self.totalBox.get())*int(self.ratioBox3.get())/temp > self.liquid3Percent*self.exchange_ratio:
+            mbox.showwarning("Ratio", "Luiquid 3 is not enough!!! Please re-setting luiquid 3 ratio value!!!") 
+            return_value = 0 
         
+        return return_value
 
+    def output_check(self):
+        if int(self.outputRatioBox1.get()) + int(self.outputRatioBox2.get()) + int(self.outputRatioBox3.get()) == 0:
+            response = mbox.askquestion("Output setting", "Are you sure not to activate any relay for output?")
+            if response == "yes":
+                self.update_timer()
+            elif response == "no":
+                print("The user said no.")
+            else:
+                print("The user canceled.")
+        else:
+            response = mbox.askquestion("Output setting", "Are you sure to enter these values?")
+            if response == "yes":
+                self.update_timer()
+            elif response == "no":
+                print("The user said no.")
+            else:
+                print("The user canceled.")
+    
+    def update_timer(self):
+        # self.inputRatio[0] = int(self.ratioBox1.get())
+        # self.inputRatio[1] = int(self.ratioBox2.get())
+        # self.inputRatio[2] = int(self.ratioBox3.get())
+
+        # self.outputRatio[0] = int(self.outputRatioBox1.get())
+        # self.outputRatio[1] = int(self.outputRatioBox2.get())
+        # self.outputRatio[2] = int(self.outputRatioBox3.get())
+        temp = int(self.ratioBox1.get()) + int(self.ratioBox2.get()) + int(self.ratioBox3.get())
+        if temp != 0:
+            self.dataModel.PUMP_ON_DELAY[0] = round(int(self.ratioBox1.get())*int(self.totalBox.get())*self.time_exchange/temp)
+            self.dataModel.PUMP_ON_DELAY[1] = round(int(self.ratioBox2.get())*int(self.totalBox.get())*self.time_exchange/temp)
+            self.dataModel.PUMP_ON_DELAY[2] = round(int(self.ratioBox3.get())*int(self.totalBox.get())*self.time_exchange/temp)
+        else:
+            self.dataModel.PUMP_ON_DELAY[0] = 0
+            self.dataModel.PUMP_ON_DELAY[1] = 0
+            self.dataModel.PUMP_ON_DELAY[2] = 0
+        
+        temp = int(self.outputRatioBox1.get()) + int(self.outputRatioBox2.get()) + int(self.outputRatioBox3.get())
+        if temp != 0:
+            self.dataModel.PUMP_ON_DELAY[3] = round(int(self.outputRatioBox1.get())*(int(self.totalBox.get())+int(self.totalBox1.get()))*self.time_exchange/temp)
+            self.dataModel.PUMP_ON_DELAY[4] = round(int(self.outputRatioBox2.get())*(int(self.totalBox.get())+int(self.totalBox1.get()))*self.time_exchange/temp)
+            self.dataModel.PUMP_ON_DELAY[5] = round(int(self.outputRatioBox3.get())*(int(self.totalBox.get())+int(self.totalBox1.get()))*self.time_exchange/temp)
+        else:
+            self.dataModel.PUMP_ON_DELAY[3] = 0
+            self.dataModel.PUMP_ON_DELAY[4] = 0
+            self.dataModel.PUMP_ON_DELAY[5] = 0
+        
+        print(self.dataModel.PUMP_ON_DELAY)
+    
     def UI_Refresh(self):
-        # self.UI_Set_Text(self.labelDistance1, self.dataModel.distance1_value)
-        # self.UI_Set_Text(self.labelDistance2, self.dataModel.distance2_value)
+        # Liquid box
+        if self.page == page_Status.MANUAL_PAGE or self.page == page_Status.AUTOMATIVE_PAGE:
+            self.sensorValueConvert()
+            self.boxLiquid1_1.create_rectangle(3, self.liquid1BoxRatio, 89, 161, fill="Chocolate")
+            self.boxLiquid1_1.create_text(50,120,text=str(self.liquid1Percent) + "%",font="Helvetica 14 bold")
+
+            self.boxLiquid2_1.create_rectangle(3, self.liquid2BoxRatio, 89, 161, fill="DodgerBlue")
+            self.boxLiquid2_1.create_text(50,120,text=str(self.liquid2Percent) + "%",font="Helvetica 14 bold")
+
+            self.boxLiquid3_1.create_rectangle(3, self.liquid3BoxRatio, 89, 161, fill="Brown")
+            self.boxLiquid3_1.create_text(50,120,text=str(self.liquid3Percent) + "%",font="Helvetica 14 bold")
         
+        # Button config
         if self.page == page_Status.MANUAL_PAGE:
             for i in range(0, self.numButton):
                 if self.dataModel.BUTTON_STATE[i] == True:
@@ -484,8 +562,17 @@ class Main_UI:
                 else:
                     self.on_button[i].config(text="OFF", bg="gold")
                     self.is_on[i] = False
+        
         self.window.update()
 
+    def sensorValueConvert(self):
+        self.liquid1Percent = math.floor((self.dataModel.distanceMax_value - self.dataModel.distance1_value)*100/self.dataModel.distanceMax_value)
+        self.liquid2Percent = math.floor((self.dataModel.distanceMax_value - self.dataModel.distance2_value)*100/self.dataModel.distanceMax_value)
+        self.liquid3Percent = math.floor((self.dataModel.distanceMax_value - self.dataModel.distance3_value)*100/self.dataModel.distanceMax_value)
+
+        self.liquid1BoxRatio = self.min_liquid_box - (self.liquid1Percent*(self.min_liquid_box - self.max_liquid_box))/100
+        self.liquid2BoxRatio = self.min_liquid_box - (self.liquid2Percent*(self.min_liquid_box - self.max_liquid_box))/100
+        self.liquid3BoxRatio = self.min_liquid_box - (self.liquid3Percent*(self.min_liquid_box - self.max_liquid_box))/100
 
     def UI_Set_Text(self,text_object, data):
         text_object.config(text="%.2f" % data)
