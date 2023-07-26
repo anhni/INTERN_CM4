@@ -2,15 +2,16 @@ import tensorflow.keras
 from keras.models import load_model  # TensorFlow is required for Keras to work
 import cv2  # Install opencv-python
 import numpy as np
+import time
 
 # Disable scientific notation for clarity
 np.set_printoptions(suppress=True)
 
 # Load the model
-model = load_model("C:\\Users\\ASUS\\Downloads\\converted_keras\\keras_model.h5", compile=False)
+model = load_model("keras_model.h5", compile=False)
 
 # Load the labelslabels.txt
-class_names = open("C:\\Users\\ASUS\\Downloads\\converted_keras\\labels.txt", "r").readlines()
+class_names = open("labels.txt", "r").readlines()
 
 # CAMERA can be 0 or 1 based on default camera of your computer
 camera = cv2.VideoCapture(0)
@@ -40,7 +41,7 @@ while True:
     # Print prediction and confidence score
     print("Class:", class_name[2:], end="")
     print("Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%")
-
+    time.sleep(3)
     # Listen to the keyboard for presses.
     keyboard_input = cv2.waitKey(1)
 
