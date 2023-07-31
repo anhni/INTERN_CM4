@@ -3,7 +3,7 @@ from PIL import Image as PILImage, ImageTk
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox as mbox
-import PrivateTasks.run_ip_camera
+
 import time
 import math
 import enum
@@ -28,6 +28,10 @@ class Main_UI:
     image_tk = None
     numButton = 8
     camera_url = None
+    camera_url_2 = None
+    check_device_flag = False
+    camera_2_flag = False
+    cap_2_flag = False
     continute = 0
     break_thread = False
     is_on = []
@@ -36,9 +40,11 @@ class Main_UI:
     outputRatio = []
     list_device = []
     models = []
+    range_of_camera =[]
     class_names = []
     ratio_value = [0,1,2,3,4,5]
     cap = None
+    cap_2 = None
     # processing_thread = threading.Thread(target=self.process_image)
     
     page = page_Status.HOME_PAGE
@@ -50,13 +56,15 @@ class Main_UI:
         # self.list_device.append('hehe')
         # Gọi hàm để đọc từng dòng của file và gán vào danh sách
         self.processing_thread = threading.Thread(target=self.process_image)
-        self.processing_thread.start()
+
+        # self.processing_thread_2 = threading.Thread(target=self.process_image_2)
+        # self.processing_thread_2.start()
         # Tạo thread để xử lý hình ảnh 
         self.processing_thread_1 = threading.Thread(target=self.Predict_image)
-        self.processing_thread_1.start()
+        self.strart_flag = False
         # Tạo cờ
         self.update_image_flag = False
-        self.update_image_flag_1 = False
+        self.update_image_flag_2 = False
         self.lines_list = self.read_text_file_to_list('IOT_SYSTEM\Save_Url\preparetion_url.txt')
         
 
@@ -66,11 +74,9 @@ class Main_UI:
             for line in self.lines_list:
                 self.list_device.append(line)
                 print(line.strip())  # Sử dụng strip() để loại bỏ ký tự xuống dòng (newline) ở cuối mỗi dòng
+
         self.window = Tk()
-        # self.on = PhotoImage(file="Ni1\Utilities\Images\on_button.png")
-        # self.off = PhotoImage(file="Ni1\Utilities\Images\off_button.png")
-        # self.on = PhotoImage(file="Utilities\Images\on_button.png")
-        # self.off = PhotoImage(file="Utilities\Images\off_button.png")
+       
 
         for i in range(0, self.numButton):
             self.is_on.append(True)
@@ -85,9 +91,8 @@ class Main_UI:
 
         self.screen_width = self.window.winfo_screenwidth()
         self.screen_height = self.window.winfo_screenheight()
-        print("Size:", self.screen_width, self.screen_height)
-        # print(self.is_on)
-        # print(self.dataModel.BUTTON_STATE)
+        # print("Size:", self.screen_width, self.screen_height)
+
         
         self.option_frame = tk.Frame(self.window)
 
@@ -182,6 +187,7 @@ class Main_UI:
 
     def home_page(self):
         self.page = page_Status.HOME_PAGE
+        
 
         self.home_frame = tk.Frame(self.main_frame)
         self.home_lb = tk.Label(self.home_frame, text="gioi thieu\n\npage 1", font="Helvetica 12 bold")
@@ -190,7 +196,7 @@ class Main_UI:
     
     def automative_page(self):
         self.page = page_Status.AUTOMATIVE_PAGE
-
+        
         self.top_manual_frame = tk.LabelFrame(self.main_frame)
         self.top_manual_frame.pack(side = 'top')
         self.top_manual_frame.pack_propagate(False)
@@ -304,6 +310,7 @@ class Main_UI:
         self.outputEnter.grid(column=1, row=5, padx=12, pady=10, sticky=tk.N, columnspan=2)
     
     def manual_page(self):
+        # self.break_thread = True
         self.page = page_Status.MANUAL_PAGE
 
         self.top_manual_frame = tk.LabelFrame(self.main_frame)
@@ -429,7 +436,10 @@ class Main_UI:
 
     def ai_page(self):
         self.page = page_Status.AI_PAGE
-
+        if self.strart_flag == False:
+            self.processing_thread.start()
+            self.processing_thread_1.start()
+            self.strart_flag == True
         self.ai_frame = tk.Frame(self.main_frame)
         self.ai_lb = tk.Label(self.ai_frame, text="Upcoming", font="Helvetica 12 bold")
 
@@ -487,10 +497,12 @@ class Main_UI:
                                     bg='dark gray', padx= 10, pady= 10,highlightbackground='white',highlightthickness=5)
         # print(self.form_ipCamera_frame.winfo_screenwidth()/2)
         for i, text in enumerate(self.list_device):
-            lable = tk.Button(self.Chose_Device_Frame, text=str('Camera_'+str(i)),command=lambda:self.show_ip_camera_chosed(self.list_device[i]),
+            self.range_of_camera.append(str('Camera_'+str(i)))
+            lable = tk.Button(self.Chose_Device_Frame, text=text,command=lambda button_name=str('Camera_'+str(i)):self.show_ip_camera_chosed(button_name),
                                 width=10, height=2, bg='green',cursor='hand2',
                                 font="Helvetica 12 bold")
-            lable.grid(column=int(i%3),row= int(i/3))
+            lable.grid(column=int(i%3),row= int(i/3),padx = 10)
+        
         # self.Device = tk.Label(self.Chose_Device_Frame, text="IP Adress",
         #                        width=10, height=1, bg='dark gray',
         #                        font="Helvetica 12 bold")
@@ -513,9 +525,14 @@ class Main_UI:
                                bg = 'green',
                                highlightbackground='Black',
                                highlightthickness=10)
-        self.Camera_lable = tk.Label(self.Frame_camera)
-        self.Camera_lable.pack(side='top')
-        self.Camera_lable.configure(bg='red')
+
+        self.Camera_lable_left = tk.Label(self.Frame_camera)
+        self.Camera_lable_left.pack(side='left')
+        self.Camera_lable_left.configure(bg='red')
+
+        self.Camera_lable_right = tk.Label(self.Frame_camera)
+        self.Camera_lable_right.pack(side='right')
+        self.Camera_lable_right.configure(bg='red')
         # self.Frame_camera.pack(side='top')
         #set right frame in show capture frame
         self.Select_Model_Frame = tk.Frame(self.Show_Capture_frame)
@@ -534,101 +551,58 @@ class Main_UI:
         self.Model_1_Frame.grid(column= 0 , row = 0 , padx=12, pady=12)
         # self.Model_1_Frame.bind("<Button-1>", self.on_label_click(1))
 
-
-        self.Model_2_Frame = tk.Label(self.Select_Model_Frame,width= 12, height= 6,
-                                bg= 'gray' , text='Tai Model' )
+        label_text_2 = "📁 Model 2"
+        self.Model_2_Frame = tk.Button(self.Select_Model_Frame,width= 12, height= 6,command=lambda:self.on_label_click(2),
+                                bg= 'gray' , text=label_text_2, font=('Arial', 12))
+        self.Model_2_Frame.config(cursor="hand2",)
         self.Model_2_Frame.grid(column= 1 , row = 0 , padx=12, pady=12)
 
-        self.Model_3_Frame = tk.Label(self.Select_Model_Frame,width= 12, height= 6,
-                                bg= 'gray' , text='Tai Model' ,highlightbackground='Black',
-                                highlightthickness=10)
-        self.Model_3_Frame.grid(column= 0 , row = 1 , padx=12, pady=12)
 
     def on_label_click(self,nums):
-        self.models.append('IOT_SYSTEM\Model\model_Vi.h5')
-        self.class_names.append('IOT_SYSTEM\Lable\labels_Vi.txt')
+        if nums == 1:
+            self.models.append('IOT_SYSTEM\Model\keras_model_DTai.h5')
+            self.class_names.append('IOT_SYSTEM\Lable\labels_DTai.txt')
+        else:
+            self.models.append('IOT_SYSTEM\Model\keras_model_Hand.h5')
+            self.class_names.append('IOT_SYSTEM\Lable\labels_Hand.txt')
     def show_ip_camera(self,ip,port):
-        self.camera_url = 'http://'+ip+':'+port+'/video'
+        if self.camera_url == None:
+            self.camera_url = 'http://'+ip+':'+port+'/video'
+            self.cap = cv2.VideoCapture(self.camera_url)
+        elif self.cap_2_flag == True:
+            self.camera_url_2 = 'http://'+ip+':'+port+'/video'
+            self.cap_2 = cv2.VideoCapture(self.camera_url_2)
+            print(self.camera_url_2)
         print(self.camera_url)
-        self.cap = cv2.VideoCapture(self.camera_url)
         self.stream_video()
     def show_ip_camera_chosed(self,url):
-        self.camera_url = url
-        print(self.camera_url)
-        self.cap = cv2.VideoCapture(self.camera_url)
+        if self.camera_url == None:
+            for i in range(0,len(self.range_of_camera)):
+                if self.range_of_camera[i] == url:
+                    self.camera_url = self.list_device[i]
+                    print('camera: ',self.range_of_camera[i])
+                    break
+            # self.camera_url = url
+            print(self.camera_url)
+            self.cap = cv2.VideoCapture(self.camera_url)
+        else:
+            for i in range(0,len(self.range_of_camera)):
+                if self.range_of_camera[i] == url:
+                    self.camera_url_2 = self.list_device[i]
+                    print('camera: ',self.range_of_camera[i])
+                    break
+            # self.camera_url_2 = url
+            print(self.camera_url_2)
+            self.cap_2 = cv2.VideoCapture(self.camera_url_2)
+        # if self.cap_2_flag == True:
+        #     self.cap_2 = cv2.VideoCapture(self.camera_url)
         self.stream_video()
-
-
-    # def stream_video(self):
-    #     if self.cap != None:
-
-    #         self.ret, self.frame = self.cap.read()
-    #         self.continute = 1
-    #         if self.ret:
-    #             # Load the model
-    #             # Chuyển đổi frame từ OpenCV sang Image của tkinter
-    #             self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
-    #             # Resize hình ảnh về kích thước mong muốn (224, 224)
-    #             self.image = cv2.resize(self.frame, (224, 224))
-
-    #             self.image_pil = PILImage.fromarray(self.image)
-    #             self.image_tk = ImageTk.PhotoImage(image=self.image_pil)
-    #             # Hiển thị hình ảnh lên cửa sổ giao diện tkinter
-    #             self.Camera_lable.config(image=self.image_tk)
-    #             # Kiem tra chuoi co ton tai chua
-    #             # try:
-    #             #     # Mở file văn bản để đọc
-    #             #     with open('IOT_SYSTEM\Save_Url\preparetion_url.txt', "r") as file:
-    #             #         # Đọc nội dung file
-    #             #         content = file.read()
-
-    #             #         # Kiểm tra xem chuỗi có tồn tại trong nội dung file hay không
-    #             #         if self.camera_url in content:
-    #             #             print("run")
-    #             #         else:
-    #             #             print("Chuỗi không tồn tại trong file.")
-    #             #             self.list_device.append(self.camera_url)
-    #             #             # ghi vao file txt
-    #             #             try:
-    #             #                 # Mở file văn bản để ghi
-    #             #                 with open('IOT_SYSTEM\Save_Url\preparetion_url.txt', "w") as file:
-    #             #                     # Ghi chuỗi vào file
-    #             #                     file.write(self.camera_url)
-
-    #             #                 print("Lưu chuỗi vào file thành công.")
-    #             #             except Exception as e:
-    #             #                 print("Đã xảy ra lỗi:", str(e))
-    #             # except FileNotFoundError:
-    #             #     print("File không tồn tại.")
-    #             # except Exception as e:
-    #             #     print("Đã xảy ra lỗi:", str(e))
-
-    #             self.processing_thread = threading.Thread(target=self.process_image)
-    #             self.processing_thread.start()
-
-
-    #             if len(self.models) :
-    #                 model = load_model(self.models[0], compile=False)
-    #                 print(self.models[0])
-    #                 # Load the labelslabels.txt
-    #                 class_names = open(self.class_names[0], "r").readlines()
-    #                 print(self.class_names[0])
-    #                 image_array = np.array(self.image)
-
-    #                 prediction = model.predict(np.expand_dims(image_array, axis=0))
-    #                 index = np.argmax(prediction)
-    #                 class_name = class_names[index]
-    #                 confidence_score = prediction[0][index]
-    #                 print("Class:", class_name[2:], end="")
-    #                 print("Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%")
-
-    #             # Print prediction and confidence score
-    #         # time.sleep(1)
-    #         self.Frame_camera.after(100, self.stream_video)
 
     def process_image(self):
         while True:
             if self.cap is not None:
+                if self.cap_2_flag == False:
+                    self.cap_2_flag = True
                 ret, frame = self.cap.read()
                 if ret:
                     # Resize hình ảnh về kích thước mong muốn (224, 224)
@@ -638,14 +612,35 @@ class Main_UI:
                     self.image_pil = self.image_pil
                     self.update_image_flag = True
                     # self.update_image()  # Cập nhật hình ảnh lên giao diện
+            if self.cap_2 is not None:
+                ret2, frame2 = self.cap_2.read()
+                if ret2:
+                    # Resize hình ảnh về kích thước mong muốn (224, 224)
+                    self.image_2 = cv2.resize(frame2, (224, 224))
+                    self.image_pil_2 = PILImage.fromarray(cv2.cvtColor(self.image_2, cv2.COLOR_BGR2RGB))
+                    # Đánh dấu cần cập nhật hình ảnh lên giao diện
+                    self.image_pil_2 = self.image_pil_2
+                    self.update_image_flag_2 = True
+                    # self.update_image()  # Cập nhật hình ảnh lên giao diện
+            
             if self.break_thread == True:
                 break
 
+            # time.sleep(0.1)
+    
+   
     def update_image(self):
         if self.update_image_flag:
             self.image_tk = ImageTk.PhotoImage(image=self.image_pil)
-            self.Camera_lable.config(image=self.image_tk)
+            self.Camera_lable_left.config(image=self.image_tk)
             self.update_image_flag = False  # Đặt lại cờ cập nhật hình ảnh
+        if self.update_image_flag_2:
+            self.image_tk_2 = ImageTk.PhotoImage(image=self.image_pil_2)
+            self.Camera_lable_right.config(image=self.image_tk_2)
+            self.update_image_flag_2 = False  # Đặt lại cờ cập nhật hình ảnh
+    
+
+
 
     def Predict_image(self):
         while True:
@@ -661,29 +656,53 @@ class Main_UI:
                 confidence_score = prediction[0][index]
                 print("Class:", class_name[2:], end="")
                 print("Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%")
+            if len(self.models) == 2:
+                model2 = load_model(self.models[1], compile=False)
+                # Load the labelslabels.txt
+                class_names2 = open(self.class_names[1], "r").readlines()
+                image_array2 = np.array(self.image_2)
+
+                prediction2 = model2.predict(np.expand_dims(image_array2, axis=0))
+                index2 = np.argmax(prediction2)
+                class_name2 = class_names2[index2]
+                confidence_score2 = prediction2[0][index2]
+                print("Class:", class_name2[2:], end="")
+                print("Confidence Score:", str(np.round(confidence_score2 * 100))[:-2], "%")
             if self.break_thread == True:
                 break
+
+            time.sleep(0.5)
+    
+    def check_device(self):
+        for check in self.list_device:
+            if self.camera_url in check:
+                self.check_device_flag = True
+                break
+        if self.check_device_flag == False:
+            try:
+                # Mở tệp văn bản để ghi thêm vào cuối tệp
+                with open('IOT_SYSTEM\Save_Url\preparetion_url.txt', "a") as file:
+                    # Ghi URL của camera vào cuối tệp
+                    file.write(self.camera_url + "\n")  # Thêm "\n" để xuống dòng sau khi ghi URL
+                print("Lưu URL vào tệp thành công.")
+            except Exception as e:
+                print("Đã xảy ra lỗi:", str(e))
+        self.check_device_flag = True
+
+
 
     def stream_video(self):
         # Lên lịch cập nhật hình ảnh lên GUI sau 100ms trong luồng chính
 
-        # if len(self.models):
-        #     model = load_model(self.models[0], compile=False)
-        #     # Load the labelslabels.txt
-        #     class_names = open(self.class_names[0], "r").readlines()
-        #     image_array = np.array(self.image)
-
-        #     prediction = model.predict(np.expand_dims(image_array, axis=0))
-        #     index = np.argmax(prediction)
-        #     class_name = class_names[index]
-        #     confidence_score = prediction[0][index]
-        #     print("Class:", class_name[2:], end="")
-        #     print("Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%")
+        # Kiem tra chuoi co ton tai chua
+        if self.check_device_flag == False:
+            self.check_device()
 
 
         self.Frame_camera.after(10, self.stream_video)
         # self.update_image_flag_1 = True
         self.update_image()  # Cập nhật hình ảnh lên giao diện
+        # self.update_image_2()  # Cập nhật hình ảnh lên giao diện
 
 
     def get_url(self):
