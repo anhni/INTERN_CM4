@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox as mbox
+from PIL import ImageTk, Image
 import time
 import math
 import enum
@@ -124,7 +125,7 @@ class Main_UI:
 
         # first time come to GUI
         self.indicate(self.home_button,self.home_page)
-        self.dataModel.getDistanceAll()
+        # self.dataModel.getDistanceAll()
     
     def indicate(self, lb, page):
         # unHighlight buttons
@@ -146,9 +147,45 @@ class Main_UI:
         self.page = page_Status.HOME_PAGE
 
         self.home_frame = tk.Frame(self.main_frame)
-        self.home_lb = tk.Label(self.home_frame, text="gioi thieu\n\npage 1", font="Helvetica 12 bold")
-        self.home_lb.pack()
+        # self.home_lb = tk.Label(self.home_frame, text="Home", font="Helvetica 12 bold")
+        # self.home_lb.pack()
+
+        # self.system_img = PhotoImage(file="Ni1\\Utilities\\Images\\system.jpg")
+        self.system_img = ImageTk.PhotoImage(file='Ni1\\Utilities\\Images\\system (2).jpg')
+
+        self.home_top = tk.Frame(self.home_frame)
+        self.home_top.pack(side="left")
+        self.home_top.pack_propagate(False)
+        self.home_top.configure(width=int(self.main_frame.winfo_screenwidth()/4), 
+                                    height=int(self.main_frame.winfo_screenheight()),
+                                    )
+        
+        # self.home_bottom = tk.Frame(self.home_frame)
+        # self.home_bottom.pack(side="left")
+        # self.home_bottom.pack_propagate(False)
+        # self.home_bottom.configure(width=int(self.main_frame.winfo_screenwidth()/4), 
+        #                             height=int(self.main_frame.winfo_screenheight()),
+        #                             )
+        
+        self.home_text1 = tk.Label(self.home_top, text="Project la mot he thong\n duoc thiet ke de phan phoi nuoc\n cho cay trong \n",
+                                   width=50, bg='dark gray',
+                                   font="Helvetica 12 bold")
+        self.home_text1.grid(column=0, row=0, padx=12, pady=2, sticky=tk.W)
+        # self.home_text1 = tk.Label(self.home_top, text="Project la mot he thong\n duoc thiet ke de phan phoi nuoc\n cho cay trong \n",
+        #                            width=30, bg='dark gray',
+        #                            font="Helvetica 12 bold")
+        # self.home_text1.grid(column=0, row=1, padx=12, pady=2, sticky=tk.W)
+        self.home_text2 = tk.Label(self.home_top,
+                                   width=500, image= self.system_img,  bg='dark gray',
+                                   font="Helvetica 12 bold")
+        self.home_text2.grid(column=0, row=1, padx=12, pady=2, sticky=tk.W)
+        # self.home_text1 = tk.Label(self.main_frame, text="Project la mot he thong\n duoc thiet ke de phan phoi nuoc\n cho cay trong \n",
+        #                            width=30, height=20, bg='dark gray',
+        #                            font="Helvetica 12 bold")
+        # self.home_text1.grid(column=0, row=0, padx=12, pady=2, sticky=tk.W)
+
         self.home_frame.pack()
+
     
     def automative_page(self):
         self.page = page_Status.AUTOMATIVE_PAGE
