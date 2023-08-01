@@ -61,7 +61,7 @@ class Monitoring:
                 self.distance1_value = self.rs485.serial_read_data()/self.distanceRatio
                 self.soft_timer.setTimer(5, self.SENSING_DELAY)
                 self.distanceStatus = Status.SENSOR2
-                # self.distanceController(12)
+                self.distanceController(12)
                 print("Read sensor 12")
         elif self.distanceStatus == Status.SENSOR2:
             if self.soft_timer.isExpire(5) == 1:
@@ -99,7 +99,7 @@ class Monitoring:
                 self.soft_timer.setTimer(0, self.PUMP_ON_DELAY[0])
                 self.status = Status.PUMP_ON1
                 self.BUTTON_STATE[0] = True
-                #self.rs485.relayController(1, 1)
+                self.rs485.relayController(1, 1)
 
         elif self.status == Status.PUMP_ON1:
             if self.soft_timer.isExpire(0) == 1:
@@ -107,7 +107,7 @@ class Monitoring:
                 self.soft_timer.setTimer(0, self.PUMP_OFF_DELAY[0])
                 self.status = Status.PUMP_OFF1
                 self.BUTTON_STATE[0] = False
-                #self.rs485.relayController(1, 0)
+                self.rs485.relayController(1, 0)
 
         elif self.status == Status.PUMP_OFF1:
             if self.soft_timer.isExpire(0) == 1:
@@ -118,7 +118,7 @@ class Monitoring:
                     self.soft_timer.setTimer(0, self.PUMP_ON_DELAY[1])
                     self.status = Status.PUMP_ON2
                     self.BUTTON_STATE[1] = True
-                    #self.rs485.relayController(2, 1)
+                    self.rs485.relayController(2, 1)
 
         elif self.status == Status.PUMP_ON2:
             if self.soft_timer.isExpire(0) == 1:
