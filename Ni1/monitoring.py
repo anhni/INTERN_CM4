@@ -54,18 +54,18 @@ class Monitoring:
         if self.distanceStatus == Status.INIT:
             self.soft_timer.setTimer(5, self.SENSING_DELAY)
             self.distanceStatus = Status.SENSOR1
-            # self.distanceController(9)
+            self.distanceController(9)
             print("Read sensor 9")
         elif self.distanceStatus == Status.SENSOR1:
             if self.soft_timer.isExpire(5) == 1:
-                # self.distance1_value = self.rs485.serial_read_data()/distanceRatio
+                self.distance1_value = self.rs485.serial_read_data()/self.distanceRatio
                 self.soft_timer.setTimer(5, self.SENSING_DELAY)
                 self.distanceStatus = Status.SENSOR2
                 # self.distanceController(12)
                 print("Read sensor 12")
         elif self.distanceStatus == Status.SENSOR2:
             if self.soft_timer.isExpire(5) == 1:
-                # self.distance2_value = self.rs485.serial_read_data()/distanceRatio
+                self.distance2_value = self.rs485.serial_read_data()/self.distanceRatio
                 self.distanceStatus = Status.INIT
                 print("Sensor success")
                 return 1
@@ -77,11 +77,11 @@ class Monitoring:
         if self.distanceStatus == Status.INIT:
             self.soft_timer.setTimer(5, self.SENSING_DELAY)
             self.distanceStatus = Status.SENSOR1
-            # self.distanceController(number)
+            self.distanceController(number)
             print("Read sensor ",number)
         elif self.distanceStatus == Status.SENSOR1:
             if self.soft_timer.isExpire(5) == 1:
-                # self.distance1_value = self.rs485.serial_read_data()/distanceRatio
+                self.distance1_value = self.rs485.serial_read_data()/distanceRatio
                 self.distanceStatus = Status.INIT
                 print("Get sensor value success")
                 return 1
@@ -126,7 +126,7 @@ class Monitoring:
                 self.soft_timer.setTimer(0, self.PUMP_OFF_DELAY[1])
                 self.status = Status.PUMP_OFF2
                 self.BUTTON_STATE[1] = False
-                #self.rs485.relayController(2, 0)
+                self.rs485.relayController(2, 0)
 
         elif self.status == Status.PUMP_OFF2:
             if self.soft_timer.isExpire(0) == 1:
@@ -138,7 +138,7 @@ class Monitoring:
                     self.soft_timer.setTimer(0, self.PUMP_ON_DELAY[2])
                     self.status = Status.PUMP_ON3
                     self.BUTTON_STATE[2] = True
-                    #self.rs485.relayController(3, 1)
+                    self.rs485.relayController(3, 1)
 
         elif self.status == Status.PUMP_ON3:
             if self.soft_timer.isExpire(0) == 1:
@@ -146,7 +146,7 @@ class Monitoring:
                 self.soft_timer.setTimer(0, self.PUMP_OFF_DELAY[2])
                 self.status = Status.PUMP_OFF3
                 self.BUTTON_STATE[2] = False
-                #self.rs485.relayController(3, 0)
+                self.rs485.relayController(3, 0)
 
         elif self.status == Status.PUMP_OFF3:
             if self.soft_timer.isExpire(0) == 1:
@@ -172,19 +172,19 @@ class Monitoring:
                 self.soft_timer.setTimer(2, self.PUMP_ON_DELAY[2])
                 if self.PUMP_ON_DELAY[0]:
                     print("1: On")
-                    # self.relayController(1, 1)
+                    self.relayController(1, 1)
                     self.BUTTON_STATE[0] = True
                 else:
                     self.count += 1
                 if self.PUMP_ON_DELAY[1]:
                     print("2: On")
-                    # self.relayController(2, 1)
+                    self.relayController(2, 1)
                     self.BUTTON_STATE[1] = True
                 else:
                     self.count += 1
                 if self.PUMP_ON_DELAY[2]:
                     print("3: On")
-                    # self.relayController(3, 1)
+                    self.relayController(3, 1)
                     self.BUTTON_STATE[2] = True
                 else:
                     self.count += 1      
@@ -192,17 +192,17 @@ class Monitoring:
             if self.soft_timer.isExpire(0):
                 print("1: Off")
                 self.count += 1
-                # self.relayController(1, 0)
+                self.relayController(1, 0)
                 self.BUTTON_STATE[0] = False
             if self.soft_timer.isExpire(1):
                 print("2: Off")
                 self.count += 1
-                # self.relayController(2, 0)
+                self.relayController(2, 0)
                 self.BUTTON_STATE[1] = False
             if self.soft_timer.isExpire(2):
                 print("3: Off")
                 self.count += 1
-                # self.relayController(3, 0)
+                self.relayController(3, 0)
                 self.BUTTON_STATE[2] = False
 
             if self.count >= 3:
@@ -217,19 +217,19 @@ class Monitoring:
                 self.soft_timer.setTimer(2, self.PUMP_ON_DELAY[5])
                 if self.PUMP_ON_DELAY[3]:
                     print("4: On")
-                    # self.relayController(4, 1)
+                    self.relayController(4, 1)
                     self.BUTTON_STATE[3] = True
                 else:
                     self.count += 1
                 if self.PUMP_ON_DELAY[4]:
                     print("5: On")
-                    # self.relayController(5, 1)
+                    self.relayController(5, 1)
                     self.BUTTON_STATE[4] = True
                 else:
                     self.count += 1
                 if self.PUMP_ON_DELAY[5]:
                     print("6: On")
-                    # self.relayController(6, 1)
+                    self.relayController(6, 1)
                     self.BUTTON_STATE[5] = True
                 else:
                     self.count += 1
@@ -237,17 +237,17 @@ class Monitoring:
             if self.soft_timer.isExpire(0):
                 print("4: Off")
                 self.count += 1
-                # self.relayController(4, 0)
+                self.relayController(4, 0)
                 self.BUTTON_STATE[4] = False
             if self.soft_timer.isExpire(1):
                 print("5: Off")
                 self.count += 1
-                # self.relayController(5, 0)
+                self.relayController(5, 0)
                 self.BUTTON_STATE[5] = False
             if self.soft_timer.isExpire(2):
                 print("6: Off")
                 self.count += 1
-                # self.relayController(6, 0)
+                self.relayController(6, 0)
                 self.BUTTON_STATE[6] = False
 
             if self.count >= 3:

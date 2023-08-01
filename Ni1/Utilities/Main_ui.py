@@ -620,12 +620,12 @@ class Main_UI:
         if self.is_on[number]:
             self.on_button[number].config(text="OFF", bg="gold")
             self.is_on[number] = False
-            # self.dataModel.relayController(number, state = 0)
+            self.dataModel.relayController(number, state = 0)
             self.dataModel.BUTTON_STATE[number] = False
         else:
             self.on_button[number].config(text="ON", bg="LimeGreen")
             self.is_on[number] = True
-            # self.dataModel.relayController(number, state = 1)
+            self.dataModel.relayController(number, state = 1)
             self.dataModel.BUTTON_STATE[number] = True
         print("Button is" + str(number) + " clicked!!!")
         print(self.is_on[number])
