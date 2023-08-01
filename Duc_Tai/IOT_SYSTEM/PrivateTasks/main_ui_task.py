@@ -627,8 +627,7 @@ class Main_UI:
                 break
 
             # time.sleep(0.1)
-    
-   
+      
     def update_image(self):
         if self.update_image_flag:
             self.image_tk = ImageTk.PhotoImage(image=self.image_pil)
@@ -639,9 +638,6 @@ class Main_UI:
             self.Camera_lable_right.config(image=self.image_tk_2)
             self.update_image_flag_2 = False  # Đặt lại cờ cập nhật hình ảnh
     
-
-
-
     def Predict_image(self):
         while True:
             if len(self.models):
@@ -688,8 +684,6 @@ class Main_UI:
             except Exception as e:
                 print("Đã xảy ra lỗi:", str(e))
         self.check_device_flag = True
-
-
 
     def stream_video(self):
         # Lên lịch cập nhật hình ảnh lên GUI sau 100ms trong luồng chính

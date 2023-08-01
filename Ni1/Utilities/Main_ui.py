@@ -7,6 +7,15 @@ import time
 import math
 import enum
 
+import cv2
+import tensorflow as tf
+from tensorflow import keras
+import threading
+
+from keras.models import load_model  # TensorFlow is required for Keras to work
+import numpy as np
+
+
 class page_Status(enum.Enum):
     HOME_PAGE = 0
     AUTOMATIVE_PAGE = 1
@@ -14,12 +23,33 @@ class page_Status(enum.Enum):
     AI_PAGE = 3
 class Main_UI:
     dataModel = None
+    
+    frame = None
+    image_pil = None
+    image_tk = None
+    camera_url = None
+    camera_url_2 = None
+    check_device_flag = False
+    camera_2_flag = False
+    cap_2_flag = False
+    continute = 0
+    break_thread = False
+    
     numButton = 8
     is_on = []
     on_button = []
     inputRatio = [0,0,0]
     outputRatio = [0,0,0]
     ratio_value = [0,1,2,3,4,5]
+
+    list_device = []
+    models = []
+    range_of_camera =[]
+    class_names = []
+
+    cap = None
+    cap_2 = None
+
     max_liquid_box = 5
     min_liquid_box = 160
     # Ex change ratio 24000ml ~ 100%
@@ -32,6 +62,23 @@ class Main_UI:
         self.dataModel = data
         print("Init the UI")
         
+        np.set_printoptions(suppress=True)
+        self.processing_thread = threading.Thread(target=self.process_image)
+        self.processing_thread_1 = threading.Thread(target=self.Predict_image)
+        self.strart_flag = False
+        # Tạo cờ
+        self.update_image_flag = False
+        self.update_image_flag_2 = False
+        self.lines_list = self.read_text_file_to_list('IOT_SYSTEM\Save_Url\preparetion_url.txt')
+        
+
+        # Kiểm tra và in từng dòng trong danh sách
+        if self.lines_list is not None:
+            print("Danh sách các dòng trong file:")
+            for line in self.lines_list:
+                self.list_device.append(line)
+                print(line.strip())
+
         self.window = Tk()
         # self.on = PhotoImage(file="Ni1\Utilities\Images\on_button.png")
         # self.off = PhotoImage(file="Ni1\Utilities\Images\off_button.png")
@@ -115,7 +162,7 @@ class Main_UI:
 
         # Exit button
         self.exit_button = Button(self.option_frame, text='Exit', font="Helvetica 14 bold",
-                                  command=self.window.destroy,
+                                  command=self.Destroy(),
                                   activebackground = 'gray',
                                   width = 12, height = 1,
                                   foreground = 'White',
@@ -127,6 +174,10 @@ class Main_UI:
         self.indicate(self.home_button,self.home_page)
         # self.dataModel.getDistanceAll()
     
+    def Destroy(self):
+        self.break_thread = True
+        self.window.destroy()  
+
     def indicate(self, lb, page):
         # unHighlight buttons
         self.home_button.config(bg = 'RoyalBlue')
@@ -185,8 +236,7 @@ class Main_UI:
         # self.home_text1.grid(column=0, row=0, padx=12, pady=2, sticky=tk.W)
 
         self.home_frame.pack()
-
-    
+   
     def automative_page(self):
         self.page = page_Status.AUTOMATIVE_PAGE
 
@@ -436,11 +486,126 @@ class Main_UI:
 
     def ai_page(self):
         self.page = page_Status.AI_PAGE
-
+        if self.strart_flag == False:
+            self.processing_thread.start()
+            self.processing_thread_1.start()
+            self.strart_flag == True
         self.ai_frame = tk.Frame(self.main_frame)
         self.ai_lb = tk.Label(self.ai_frame, text="Upcoming", font="Helvetica 12 bold")
+
+       
         self.ai_lb.pack()
         self.ai_frame.pack()
+        #set form frame in main_frame
+        self.form_ipCamera_frame = tk.LabelFrame(self.main_frame,text='Top Form')
+        self.form_ipCamera_frame.pack(side = 'top')
+        self.form_ipCamera_frame.pack_propagate(False)
+        self.form_ipCamera_frame.grid_propagate(False)
+        self.form_ipCamera_frame.configure(width = self.main_frame.winfo_screenwidth() , 
+                                    height=self.main_frame.winfo_screenheight()/3 - 5,
+                                    bg='gray', padx= 20, pady= 20,highlightbackground='white',highlightthickness=5)
+        #set connect form 
+        self.Connect_Frame = tk.Frame(self.form_ipCamera_frame)
+        self.Connect_Frame.pack(side='left')
+        self.Connect_Frame.grid_propagate(False)
+        self.Connect_Frame.pack_propagate(False)
+        self.Connect_Frame.configure(width = self.form_ipCamera_frame.winfo_screenwidth()/4 -10 , 
+                                    height=self.form_ipCamera_frame.winfo_screenheight(),
+                                    bg='dark gray', padx= 0, pady= 10,highlightbackground='white',highlightthickness=5)
+        #lable for IP Area
+        self.IP = tk.Label(self.Connect_Frame, text="IP Adress",
+                               width=10, height=1, bg='dark gray',
+                               font="Helvetica 12 bold")
+        self.IP.grid(column=0, row=0, padx=12, pady=2, sticky=tk.EW)
+
+        self.Area_IP = tk.Entry(self.Connect_Frame, 
+                               width=30)
+        self.Area_IP.grid(column=1, row=0, padx=12, pady=2, sticky=tk.EW)
+        #lable for Port
+        self.Port = tk.Label(self.Connect_Frame, text="Port",
+                               width=10, height=1, bg='dark gray',
+                               font="Helvetica 12 bold")
+        self.Port.grid(column=0, row=1, padx=12, pady=10, sticky=tk.EW)
+
+        self.Area_Port = tk.Entry(self.Connect_Frame, 
+                               width=30)
+        self.Area_Port.grid(column=1, row=1, padx=12, pady=2, sticky=tk.EW)
+        #button submit
+        self.button_submit = tk.Button(self.Connect_Frame,text="Connect",
+                                      command=lambda:self.get_url(),
+                                      width=6, height=1,
+                                      bg="LimeGreen", fg="White",
+                                      font="Helvetica 16 bold")
+        self.button_submit.grid(column=0,row=2, padx=12, pady=2, sticky=tk.EW)
+
+        #chose device frame
+        self.Chose_Device_Frame = tk.Frame(self.form_ipCamera_frame)
+        self.Chose_Device_Frame.pack(side='right')
+        self.Chose_Device_Frame.grid_propagate(False)
+        self.Chose_Device_Frame.configure(width = self.form_ipCamera_frame.winfo_screenwidth()/2 , 
+                                    height=self.form_ipCamera_frame.winfo_screenheight(),
+                                    bg='dark gray', padx= 10, pady= 10,highlightbackground='white',highlightthickness=5)
+        # print(self.form_ipCamera_frame.winfo_screenwidth()/2)
+        for i, text in enumerate(self.list_device):
+            self.range_of_camera.append(str('Camera_'+str(i)))
+            lable = tk.Button(self.Chose_Device_Frame, text=text,command=lambda button_name=str('Camera_'+str(i)):self.show_ip_camera_chosed(button_name),
+                                width=10, height=2, bg='green',cursor='hand2',
+                                font="Helvetica 12 bold")
+            lable.grid(column=int(i%3),row= int(i/3),padx = 10)
+        
+        # self.Device = tk.Label(self.Chose_Device_Frame, text="IP Adress",
+        #                        width=10, height=1, bg='dark gray',
+        #                        font="Helvetica 12 bold")
+        # self.Device.grid(column=0, row=0, padx=12, pady=2, sticky=tk.EW)
+        #set camera frame in main_frame
+        self.Show_Capture_frame = tk.LabelFrame(self.main_frame)
+        self.Show_Capture_frame.pack(side = 'top')
+        self.Show_Capture_frame.pack_propagate(False)
+        self.Show_Capture_frame.configure(width = self.main_frame.winfo_screenwidth() , text="show_camera",
+                                            height=2*self.main_frame.winfo_screenheight()/2 -5,
+                                            bg='dark gray', padx= 10, pady= 20,highlightbackground='white',highlightthickness=5)
+
+        #get width of show_capture_frame
+        # self.Show_Capture_frame_width = self.Show_Capture_frame.winfo_width()
+        self.Frame_camera = tk.Frame(self.Show_Capture_frame)
+        self.Frame_camera.pack(side = 'left')
+        self.Frame_camera.pack_propagate(False)
+        self.Frame_camera.grid_propagate(False)
+        self.Frame_camera.configure(width = self.Show_Capture_frame.winfo_screenwidth()/2, height = self.Show_Capture_frame.winfo_screenwidth(),
+                               bg = 'green',
+                               highlightbackground='Black',
+                               highlightthickness=10)
+
+        self.Camera_lable_left = tk.Label(self.Frame_camera)
+        self.Camera_lable_left.pack(side='left')
+        self.Camera_lable_left.configure(bg='red')
+
+        self.Camera_lable_right = tk.Label(self.Frame_camera)
+        self.Camera_lable_right.pack(side='right')
+        self.Camera_lable_right.configure(bg='red')
+        # self.Frame_camera.pack(side='top')
+        #set right frame in show capture frame
+        self.Select_Model_Frame = tk.Frame(self.Show_Capture_frame)
+        self.Select_Model_Frame.pack(side = 'right')
+        self.Select_Model_Frame.pack_propagate(False)
+        self.Select_Model_Frame.grid_propagate(False)
+        self.Select_Model_Frame.configure(width =self.Show_Capture_frame.winfo_screenwidth() - self.Show_Capture_frame.winfo_screenwidth()/2 - 10, height = self.Show_Capture_frame.winfo_screenwidth(),
+                               bg = 'dark gray',
+                               highlightbackground='Black',
+                               highlightthickness=10)
+        
+        self.label_text = "📁 Model 1"
+        self.Model_1_Frame = tk.Button(self.Select_Model_Frame,width= 12, height= 6,command=lambda:self.on_label_click(1),
+                                bg= 'gray' , text=self.label_text, font=('Arial', 12))
+        self.Model_1_Frame.config(cursor="hand2",)
+        self.Model_1_Frame.grid(column= 0 , row = 0 , padx=12, pady=12)
+        # self.Model_1_Frame.bind("<Button-1>", self.on_label_click(1))
+
+        label_text_2 = "📁 Model 2"
+        self.Model_2_Frame = tk.Button(self.Select_Model_Frame,width= 12, height= 6,command=lambda:self.on_label_click(2),
+                                bg= 'gray' , text=label_text_2, font=('Arial', 12))
+        self.Model_2_Frame.config(cursor="hand2",)
+        self.Model_2_Frame.grid(column= 1 , row = 0 , padx=12, pady=12)
         
     def liquidBox(self, frame):
         # Liquid 1
@@ -630,6 +795,171 @@ class Main_UI:
         print("Button is" + str(number) + " clicked!!!")
         print(self.is_on[number])
 
+    def on_label_click(self,nums):
+        if nums == 1:
+            self.models.append('IOT_SYSTEM\Model\keras_model_DTai.h5')
+            self.class_names.append('IOT_SYSTEM\Lable\labels_DTai.txt')
+        else:
+            self.models.append('IOT_SYSTEM\Model\keras_model_Hand.h5')
+            self.class_names.append('IOT_SYSTEM\Lable\labels_Hand.txt')
+    def show_ip_camera(self,ip,port):
+        if self.camera_url == None:
+            self.camera_url = 'http://'+ip+':'+port+'/video'
+            self.cap = cv2.VideoCapture(self.camera_url)
+        elif self.cap_2_flag == True:
+            self.camera_url_2 = 'http://'+ip+':'+port+'/video'
+            self.cap_2 = cv2.VideoCapture(self.camera_url_2)
+            print(self.camera_url_2)
+        print(self.camera_url)
+        self.stream_video()
+    def show_ip_camera_chosed(self,url):
+        if self.camera_url == None:
+            for i in range(0,len(self.range_of_camera)):
+                if self.range_of_camera[i] == url:
+                    self.camera_url = self.list_device[i]
+                    print('camera: ',self.range_of_camera[i])
+                    break
+            # self.camera_url = url
+            print(self.camera_url)
+            self.cap = cv2.VideoCapture(self.camera_url)
+        else:
+            for i in range(0,len(self.range_of_camera)):
+                if self.range_of_camera[i] == url:
+                    self.camera_url_2 = self.list_device[i]
+                    print('camera: ',self.range_of_camera[i])
+                    break
+            # self.camera_url_2 = url
+            print(self.camera_url_2)
+            self.cap_2 = cv2.VideoCapture(self.camera_url_2)
+        # if self.cap_2_flag == True:
+        #     self.cap_2 = cv2.VideoCapture(self.camera_url)
+        self.stream_video()
+
+    def process_image(self):
+        while True:
+            if self.cap is not None:
+                if self.cap_2_flag == False:
+                    self.cap_2_flag = True
+                ret, frame = self.cap.read()
+                if ret:
+                    # Resize hình ảnh về kích thước mong muốn (224, 224)
+                    self.image = cv2.resize(frame, (224, 224))
+                    self.image_pil = PILImage.fromarray(cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB))
+                    # Đánh dấu cần cập nhật hình ảnh lên giao diện
+                    self.image_pil = self.image_pil
+                    self.update_image_flag = True
+                    # self.update_image()  # Cập nhật hình ảnh lên giao diện
+            if self.cap_2 is not None:
+                ret2, frame2 = self.cap_2.read()
+                if ret2:
+                    # Resize hình ảnh về kích thước mong muốn (224, 224)
+                    self.image_2 = cv2.resize(frame2, (224, 224))
+                    self.image_pil_2 = PILImage.fromarray(cv2.cvtColor(self.image_2, cv2.COLOR_BGR2RGB))
+                    # Đánh dấu cần cập nhật hình ảnh lên giao diện
+                    self.image_pil_2 = self.image_pil_2
+                    self.update_image_flag_2 = True
+                    # self.update_image()  # Cập nhật hình ảnh lên giao diện
+            
+            if self.break_thread == True:
+                break
+
+            # time.sleep(0.1)
+      
+    def update_image(self):
+        if self.update_image_flag:
+            self.image_tk = ImageTk.PhotoImage(image=self.image_pil)
+            self.Camera_lable_left.config(image=self.image_tk)
+            self.update_image_flag = False  # Đặt lại cờ cập nhật hình ảnh
+        if self.update_image_flag_2:
+            self.image_tk_2 = ImageTk.PhotoImage(image=self.image_pil_2)
+            self.Camera_lable_right.config(image=self.image_tk_2)
+            self.update_image_flag_2 = False  # Đặt lại cờ cập nhật hình ảnh
     
+    def Predict_image(self):
+        while True:
+            if len(self.models):
+                model = load_model(self.models[0], compile=False)
+                # Load the labelslabels.txt
+                class_names = open(self.class_names[0], "r").readlines()
+                image_array = np.array(self.image)
+
+                prediction = model.predict(np.expand_dims(image_array, axis=0))
+                index = np.argmax(prediction)
+                class_name = class_names[index]
+                confidence_score = prediction[0][index]
+                print("Class:", class_name[2:], end="")
+                print("Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%")
+            if len(self.models) == 2:
+                model2 = load_model(self.models[1], compile=False)
+                # Load the labelslabels.txt
+                class_names2 = open(self.class_names[1], "r").readlines()
+                image_array2 = np.array(self.image_2)
+
+                prediction2 = model2.predict(np.expand_dims(image_array2, axis=0))
+                index2 = np.argmax(prediction2)
+                class_name2 = class_names2[index2]
+                confidence_score2 = prediction2[0][index2]
+                print("Class:", class_name2[2:], end="")
+                print("Confidence Score:", str(np.round(confidence_score2 * 100))[:-2], "%")
+            if self.break_thread == True:
+                break
+
+            time.sleep(0.5)
+    
+    def check_device(self):
+        for check in self.list_device:
+            if self.camera_url in check:
+                self.check_device_flag = True
+                break
+        if self.check_device_flag == False:
+            try:
+                # Mở tệp văn bản để ghi thêm vào cuối tệp
+                with open('IOT_SYSTEM\Save_Url\preparetion_url.txt', "a") as file:
+                    # Ghi URL của camera vào cuối tệp
+                    file.write(self.camera_url + "\n")  # Thêm "\n" để xuống dòng sau khi ghi URL
+                print("Lưu URL vào tệp thành công.")
+            except Exception as e:
+                print("Đã xảy ra lỗi:", str(e))
+        self.check_device_flag = True
+
+    def stream_video(self):
+        # Lên lịch cập nhật hình ảnh lên GUI sau 100ms trong luồng chính
+
+        # Kiem tra chuoi co ton tai chua
+        if self.check_device_flag == False:
+            self.check_device()
+
+
+        self.Frame_camera.after(10, self.stream_video)
+        # self.update_image_flag_1 = True
+        self.update_image()  # Cập nhật hình ảnh lên giao diện
+        # self.update_image_2()  # Cập nhật hình ảnh lên giao diện
+
+    def get_url(self):
+        #get IP
+        self.IP_input = self.Area_IP.get()
+        print("Dữ liệu nhập vào:", self.IP_input)
+        #get port
+        self.Port_input = self.Area_Port.get()
+        print("Dữ liệu nhập vào:", self.Port_input)
+        self.show_ip_camera(self.IP_input,self.Port_input)
+
+        # Private_Tasks.run_ip_camera.add_url(self.IP_input,self.Port_input)
+
+    def read_text_file_to_list(self,file_path):
+        try:
+            # Mở file văn bản để đọc
+            with open(file_path, "r") as file:
+                # Đọc từng dòng của file và lưu vào danh sách
+                self.lines_list = file.readlines()
+
+            return self.lines_list
+        except FileNotFoundError:
+            print("File không tồn tại.")
+        except Exception as e:
+            print("Đã xảy ra lỗi:", str(e))
+            return None
+
+ 
 
     
